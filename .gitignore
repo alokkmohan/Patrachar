@@ -1,0 +1,7 @@
+# Large/sensitive files
+*.pdf
+*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
