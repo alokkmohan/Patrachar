@@ -220,19 +220,16 @@
             <span class="err-msg" id="err-studentName">Please enter student name.</span>
           </div>
           <div class="form-group">
-            <label>Father's Name <span class="req">*</span></label>
-            <input type="text" id="fatherName" placeholder="Father's full name" required>
-            <span class="err-msg" id="err-fatherName">Please enter father's name.</span>
+            <label>Father's Name</label>
+            <input type="text" id="fatherName" placeholder="Father's full name">
           </div>
           <div class="form-group">
-            <label>Mother's Name <span class="req">*</span></label>
-            <input type="text" id="motherName" placeholder="Mother's full name" required>
-            <span class="err-msg" id="err-motherName">Please enter mother's name.</span>
+            <label>Mother's Name</label>
+            <input type="text" id="motherName" placeholder="Mother's full name">
           </div>
           <div class="form-group">
-            <label>Date of Birth <span class="req">*</span></label>
-            <input type="date" id="dob" required max="">
-            <span class="err-msg" id="err-dob">Please enter date of birth.</span>
+            <label>Date of Birth</label>
+            <input type="date" id="dob" max="">
           </div>
           <div class="form-group">
             <label>Gender <span class="req">*</span></label>
@@ -244,9 +241,9 @@
             <span class="err-msg" id="err-gender">Please select gender.</span>
           </div>
           <div class="form-group">
-            <label>Aadhaar Number <span class="req">*</span></label>
-            <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number" maxlength="12" inputmode="numeric" required>
-            <span class="err-msg" id="err-aadhaar">Enter valid 12-digit Aadhaar number.</span>
+            <label>Aadhaar Number</label>
+            <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number (optional)" maxlength="12" inputmode="numeric">
+            <span class="err-msg" id="err-aadhaar">If entered, must be 12 digits.</span>
           </div>
           <div class="form-group">
             <label>Mobile Number <span class="req">*</span></label>
@@ -263,24 +260,22 @@
       <div class="section-body">
         <div class="grid-3">
           <div class="form-group">
-            <label>Exam Passed <span class="req">*</span></label>
-            <select id="prevExam" required>
+            <label>Exam Passed</label>
+            <select id="prevExam">
               <option value="">-- Select Exam --</option>
               <option value="High School (Class 10)">High School (Class 10)</option>
               <option value="Intermediate (Class 12)">Intermediate (Class 12)</option>
               <option value="Other">Other</option>
             </select>
-            <span class="err-msg" id="err-prevExam">Please select previous exam.</span>
           </div>
           <div class="form-group">
-            <label>Passing Year <span class="req">*</span></label>
-            <input type="number" id="prevYear" placeholder="e.g. 2023" min="1980" max="2026" required>
-            <span class="err-msg" id="err-prevYear">Enter valid passing year.</span>
+            <label>Passing Year</label>
+            <input type="number" id="prevYear" placeholder="e.g. 2023" min="1980" max="2026">
+            <span class="err-msg" id="err-prevYear">Enter valid year (1980–2026).</span>
           </div>
           <div class="form-group">
-            <label>Board <span class="req">*</span></label>
-            <input type="text" id="prevBoard" placeholder="e.g. UP Board, CBSE" required>
-            <span class="err-msg" id="err-prevBoard">Please enter board name.</span>
+            <label>Board</label>
+            <input type="text" id="prevBoard" placeholder="e.g. UP Board, CBSE">
           </div>
         </div>
       </div>
@@ -292,9 +287,8 @@
       <div class="section-body">
         <div class="grid-2">
           <div class="form-group">
-            <label>Fees Submitted (₹) <span class="req">*</span></label>
-            <input type="number" id="feesSubmitted" placeholder="Amount in rupees" min="0" required>
-            <span class="err-msg" id="err-feesSubmitted">Please enter fees amount.</span>
+            <label>Fees Submitted (₹)</label>
+            <input type="number" id="feesSubmitted" placeholder="Amount in rupees (optional)" min="0">
           </div>
         </div>
       </div>
@@ -444,27 +438,44 @@ function validate() {
     if (!pass) ok = false;
   }
 
-  check('district',      'err-district',      null);
-  check('centre',        'err-centre',        null);
-  check('classYear',     'err-classYear',     null);
-  check('stream',        'err-stream',        null);
-  check('category',      'err-category',      null);
-  check('studentName',   'err-studentName',   null);
-  check('fatherName',    'err-fatherName',    null);
-  check('motherName',    'err-motherName',    null);
-  check('dob',           'err-dob',           null);
-  check('aadhaar',       'err-aadhaar',       function(v){ return /^\d{12}$/.test(v); });
-  check('mobile',        'err-mobile',        function(v){ return /^\d{10}$/.test(v); });
-  check('prevExam',      'err-prevExam',      null);
-  check('prevYear',      'err-prevYear',      function(v){ return /^\d{4}$/.test(v) && +v >= 1980 && +v <= 2026; });
-  check('prevBoard',     'err-prevBoard',     null);
-  check('feesSubmitted', 'err-feesSubmitted', function(v){ return v !== '' && +v >= 0; });
+  // Mandatory fields
+  check('district',    'err-district',    null);
+  check('centre',      'err-centre',      null);
+  check('classYear',   'err-classYear',   null);
+  check('stream',      'err-stream',      null);
+  check('category',    'err-category',    null);
+  check('studentName', 'err-studentName', null);
+  check('mobile',      'err-mobile',      function(v){ return /^\d{10}$/.test(v); });
 
-  // Gender radio
+  // Gender radio (mandatory)
   var gender = document.querySelector('input[name="gender"]:checked');
   var gErr = document.getElementById('err-gender');
   if (!gender) { gErr.style.display = 'block'; ok = false; }
   else          { gErr.style.display = 'none'; }
+
+  // Aadhaar — optional but if filled must be 12 digits
+  var aadhaarVal = document.getElementById('aadhaar').value.trim();
+  var aadhaarErr = document.getElementById('err-aadhaar');
+  if (aadhaarVal !== '' && !/^\d{12}$/.test(aadhaarVal)) {
+    document.getElementById('aadhaar').classList.add('error');
+    aadhaarErr.style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('aadhaar').classList.remove('error');
+    aadhaarErr.style.display = 'none';
+  }
+
+  // Prev Year — optional but if filled must be valid
+  var prevYearVal = document.getElementById('prevYear').value.trim();
+  var prevYearErr = document.getElementById('err-prevYear');
+  if (prevYearVal !== '' && (!/^\d{4}$/.test(prevYearVal) || +prevYearVal < 1980 || +prevYearVal > 2026)) {
+    document.getElementById('prevYear').classList.add('error');
+    prevYearErr.style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('prevYear').classList.remove('error');
+    prevYearErr.style.display = 'none';
+  }
 
   return ok;
 }
