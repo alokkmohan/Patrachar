@@ -64,10 +64,16 @@ body {
 .dash-header p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 .dash-header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 #lastUpdated {
-  font-size: 11px; opacity: 0.8;
-  background: rgba(255,255,255,0.15);
-  padding: 4px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  padding: 8px 16px; border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center;
+  line-height: 1.4; min-width: 160px; text-align: center;
 }
+#lastUpdated .lu-label { font-size: 10px; opacity: 0.75; font-weight: 500; }
+#lastUpdated .lu-time  { font-size: 14px; font-weight: 800; }
+#lastUpdated .lu-date  { font-size: 12px; opacity: 0.9; }
 #refreshBtn {
   background: var(--accent); color: var(--primary);
   border: none; padding: 7px 16px; border-radius: 20px;
@@ -292,7 +298,11 @@ tbody td { padding: 10px 14px; }
       </div>
     </div>
     <div class="dash-header-right">
-      <span id="lastUpdated">—</span>
+      <div id="lastUpdated">
+        <span class="lu-label">अंतिम अपडेट</span>
+        <span class="lu-time" id="luTime">—</span>
+        <span class="lu-date" id="luDate">—</span>
+      </div>
       <button id="refreshBtn" onclick="loadData()">⟳ Refresh</button>
     </div>
   </header>
@@ -466,8 +476,7 @@ function loadData() {
       allData = parseCSV(csv);
       populateDistrictFilter();
       applyFilters();
-      document.getElementById('lastUpdated').textContent =
-        'अंतिम अपडेट: ' + formatTime(new Date());
+      updateLastUpdated(new Date());
       document.getElementById('loading').style.display = 'none';
       document.getElementById('app').style.display     = 'block';
     })
@@ -584,9 +593,19 @@ function isWithinDays(d, n) {
   return d >= cutoff;
 }
 
-function formatTime(d) {
-  return d.toLocaleTimeString('hi-IN', {hour:'2-digit', minute:'2-digit'}) +
-    ', ' + d.toLocaleDateString('hi-IN');
+var MONTHS_EN = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+function updateLastUpdated(d) {
+  document.getElementById('luTime').textContent =
+    d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12: true});
+  document.getElementById('luDate').textContent =
+    d.getDate() + ' ' + MONTHS_EN[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return d.getDate() + ' ' + MONTHS_EN[d.getMonth()].slice(0,3);
 }
 
 function formatDate(d) {
@@ -692,20 +711,25 @@ function renderTrendChart() {
 // ════════════════════════════════════════════
 function renderClassChart() {
   var map = countBy(filteredData, 'Class');
-  var labels = Object.keys(map);
-  var data   = Object.values(map);
+  var keys = Object.keys(map);
+  var data = Object.values(map);
+  var labels = keys.map(function(l, i) {
+    var name = l === 'Class 11' ? 'कक्षा 11' : l === 'Class 12' ? 'कक्षा 12' : l;
+    return name + ' (' + data[i] + ')';
+  });
 
   if (charts.cls) charts.cls.destroy();
   charts.cls = new Chart(document.getElementById('classChart'), {
     type: 'doughnut',
     data: {
-      labels: labels.map(function(l){ return l === 'Class 11' ? 'कक्षा 11' : l === 'Class 12' ? 'कक्षा 12' : l; }),
+      labels: labels,
       datasets: [{ data: data, backgroundColor: ['#2E75B6','#27ae60','#f39c12'], borderWidth: 2 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } },
+        tooltip: { callbacks: { label: function(ctx) { return ctx.label; } } }
       }
     }
   });
@@ -715,10 +739,13 @@ function renderClassChart() {
 // GENDER CHART
 // ════════════════════════════════════════════
 function renderGenderChart() {
-  var map = countBy(filteredData, 'Gender');
+  var map     = countBy(filteredData, 'Gender');
   var labelMap = { 'Male': 'पुरुष', 'Female': 'महिला', 'Other': 'अन्य' };
-  var labels = Object.keys(map).map(function(k){ return labelMap[k] || k; });
-  var data   = Object.values(map);
+  var keys    = Object.keys(map);
+  var data    = Object.values(map);
+  var labels  = keys.map(function(k, i) {
+    return (labelMap[k] || k) + ' (' + data[i] + ')';
+  });
 
   if (charts.gender) charts.gender.destroy();
   charts.gender = new Chart(document.getElementById('genderChart'), {
@@ -730,7 +757,8 @@ function renderGenderChart() {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } },
+        tooltip: { callbacks: { label: function(ctx) { return ctx.label; } } }
       }
     }
   });
