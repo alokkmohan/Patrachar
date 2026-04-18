@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patrachar Monitoring Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary:   #1F4E79;
+  --primary2:  #2E75B6;
+  --accent:    #FFD700;
+  --green:     #27ae60;
+  --yellow:    #f39c12;
+  --red:       #e74c3c;
+  --bg:        #eef2f7;
+  --card:      #ffffff;
+  --text:      #1a1a2e;
+  --muted:     #6c757d;
+  --border:    #dee2e6;
+  --shadow:    0 2px 12px rgba(0,0,0,0.08);
+}
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+/* ── Loading ── */
+#loading {
+  position: fixed; inset: 0; background: var(--primary);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999; color: white; gap: 16px;
+}
+#loading .spinner {
+  width: 48px; height: 48px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading p { font-size: 15px; opacity: 0.9; }
+/* ── Header ── */
+.dash-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary2) 100%);
+  color: white;
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  position: sticky; top: 0; z-index: 100;
+}
+.dash-header-left { display: flex; align-items: center; gap: 14px; }
+.dash-header-logo {
+  width: 46px; height: 46px; background: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.dash-header h1 { font-size: 18px; font-weight: 700; }
+.dash-header p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.dash-header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+#lastUpdated {
+  font-size: 11px; opacity: 0.8;
+  background: rgba(255,255,255,0.15);
+  padding: 4px 10px; border-radius: 20px;
+}
+#refreshBtn {
+  background: var(--accent); color: var(--primary);
+  border: none; padding: 7px 16px; border-radius: 20px;
+  font-weight: 700; font-size: 12px; cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+#refreshBtn:hover { opacity: 0.85; }
+#refreshBtn:active { transform: scale(0.97); }
+/* ── Main Container ── */
+.container { max-width: 1400px; margin: 0 auto; padding: 20px 16px 40px; }
+/* ── Filter Bar ── */
+.filter-bar {
+  background: var(--card); border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.filter-bar label { font-size: 12px; font-weight: 700; color: var(--primary); white-space: nowrap; }
+.filter-bar select {
+  border: 1.5px solid var(--border); border-radius: 6px;
+  padding: 7px 10px; font-size: 13px; color: var(--text);
+  background: white; cursor: pointer; min-width: 160px;
+  transition: border-color 0.2s;
+}
+.filter-bar select:focus { outline: none; border-color: var(--primary2); }
+.filter-context {
+  margin-left: auto; font-size: 12px; color: var(--primary2);
+  font-weight: 600; background: #e8f0fe; padding: 5px 12px;
+  border-radius: 20px; white-space: nowrap;
+}
+/* ── KPI Cards ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 20px;
+}
+.kpi-card {
+  background: var(--card); border-radius: 10px;
+  padding: 20px 18px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+  border-left: 4px solid var(--primary2);
+  transition: transform 0.2s;
+}
+.kpi-card:hover { transform: translateY(-2px); }
+.kpi-card.green  { border-left-color: var(--green); }
+.kpi-card.yellow { border-left-color: var(--yellow); }
+.kpi-card.red    { border-left-color: var(--red); }
+.kpi-icon {
+  width: 48px; height: 48px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.kpi-card:nth-child(1) .kpi-icon { background: #e8f0fe; }
+.kpi-card:nth-child(2) .kpi-icon { background: #e8f8f0; }
+.kpi-card:nth-child(3) .kpi-icon { background: #fef9e7; }
+.kpi-card:nth-child(4) .kpi-icon { background: #fdf2f2; }
+.kpi-body { min-width: 0; }
+.kpi-value { font-size: 28px; font-weight: 800; line-height: 1; color: var(--text); }
+.kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+/* ── Charts ── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px; margin-bottom: 20px;
+}
+.chart-card {
+  background: var(--card); border-radius: 10px;
+  padding: 18px; box-shadow: var(--shadow);
+}
+.chart-card h3 {
+  font-size: 13px; font-weight: 700; color: var(--primary);
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--bg);
+  display: flex; align-items: center; gap: 6px;
+}
+.chart-canvas-wrap {
+  position: relative;
+  height: 220px;
+}
+/* ── Performance + Alerts ── */
+.perf-alerts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px; margin-bottom: 20px;
+}
+.perf-card, .alert-card {
+  background: var(--card); border-radius: 10px;
+  padding: 18px; box-shadow: var(--shadow);
+}
+.perf-card h3, .alert-card h3 {
+  font-size: 13px; font-weight: 700; color: var(--primary);
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--bg);
+  display: flex; align-items: center; gap: 6px;
+}
+.perf-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--bg);
+  gap: 8px;
+}
+.perf-row:last-child { border-bottom: none; }
+.perf-rank {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--primary); color: white;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.perf-name { font-size: 12px; color: var(--text); flex: 1; min-width: 0; }
+.perf-name small { display: block; font-size: 10px; color: var(--muted); }
+.perf-count {
+  font-size: 14px; font-weight: 700; color: var(--primary2);
+  white-space: nowrap;
+}
+.perf-bar-wrap { width: 60px; background: var(--bg); border-radius: 4px; height: 6px; }
+.perf-bar      { height: 6px; border-radius: 4px; background: var(--primary2); }
+/* Alerts */
+.alert-item {
+  padding: 10px 12px; border-radius: 7px;
+  margin-bottom: 8px; font-size: 12px;
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.alert-item:last-child { margin-bottom: 0; }
+.alert-item.warn  { background: #fff8e1; border-left: 3px solid var(--yellow); }
+.alert-item.danger{ background: #fdf2f2; border-left: 3px solid var(--red); }
+.alert-item.info  { background: #e8f4fd; border-left: 3px solid #3498db; }
+.alert-icon { font-size: 16px; flex-shrink: 0; }
+.alert-text strong { display: block; font-size: 12px; color: var(--text); }
+.alert-text span   { font-size: 11px; color: var(--muted); }
+/* ── Table ── */
+.table-section {
+  background: var(--card); border-radius: 10px;
+  padding: 18px; box-shadow: var(--shadow);
+}
+.table-section h3 {
+  font-size: 13px; font-weight: 700; color: var(--primary);
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--bg);
+  display: flex; align-items: center; gap: 6px;
+}
+.table-search {
+  margin-bottom: 12px;
+}
+.table-search input {
+  border: 1.5px solid var(--border); border-radius: 6px;
+  padding: 7px 12px; font-size: 13px; width: 280px;
+  transition: border-color 0.2s;
+}
+.table-search input:focus { outline: none; border-color: var(--primary2); }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--primary); color: white; }
+thead th { padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; white-space: nowrap; }
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { background: var(--primary2); }
+tbody tr { border-bottom: 1px solid var(--bg); transition: background 0.15s; }
+tbody tr:hover { background: #f8faff; }
+tbody td { padding: 10px 14px; }
+.status-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.status-active   { background: #e8f8f0; color: var(--green); }
+.status-slow     { background: #fef9e7; color: var(--yellow); }
+.status-inactive { background: #fdf2f2; color: var(--red); }
+.no-data {
+  text-align: center; padding: 40px; color: var(--muted); font-size: 14px;
+}
+/* ── Footer ── */
+.dash-footer {
+  text-align: center; padding: 16px;
+  font-size: 11px; color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+/* ── Error Banner ── */
+.error-banner {
+  background: #fdf2f2; border: 1px solid var(--red);
+  border-radius: 8px; padding: 14px 18px;
+  color: #c0392b; font-size: 13px; margin-bottom: 16px;
+  display: none;
+}
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .charts-row      { grid-template-columns: 1fr 1fr; }
+  .charts-row > :first-child { grid-column: span 2; }
+  .perf-alerts-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .kpi-grid        { grid-template-columns: 1fr 1fr; }
+  .charts-row      { grid-template-columns: 1fr; }
+  .charts-row > :first-child { grid-column: span 1; }
+  .perf-alerts-row { grid-template-columns: 1fr; }
+  .filter-context  { margin-left: 0; }
+  .dash-header h1  { font-size: 15px; }
+  .table-search input { width: 100%; }
+}
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .kpi-value { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>डेटा लोड हो रहा है…</p>
+</div>
+
+<!-- Dashboard -->
+<div id="app" style="display:none;">
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="dash-header-left">
+      <div class="dash-header-logo">📊</div>
+      <div>
+        <h1>Patrachar Monitoring Dashboard</h1>
+        <p>Real-time Registration Status | UP Madhyamik Shiksha Vibhag</p>
+      </div>
+    </div>
+    <div class="dash-header-right">
+      <span id="lastUpdated">—</span>
+      <button id="refreshBtn" onclick="loadData()">⟳ Refresh</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Error Banner -->
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <label>जिला:</label>
+      <select id="filterDistrict" onchange="applyFilters()">
+        <option value="">सभी जिले</option>
+      </select>
+
+      <label>कक्षा:</label>
+      <select id="filterClass" onchange="applyFilters()">
+        <option value="">सभी</option>
+        <option value="Class 11">कक्षा 11</option>
+        <option value="Class 12">कक्षा 12</option>
+      </select>
+
+      <label>लिंग:</label>
+      <select id="filterGender" onchange="applyFilters()">
+        <option value="">सभी</option>
+        <option value="Male">पुरुष</option>
+        <option value="Female">महिला</option>
+        <option value="Other">अन्य</option>
+      </select>
+
+      <div class="filter-context" id="filterContext">सभी जिले दिखाए जा रहे हैं</div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">📋</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiTotal">—</div>
+          <div class="kpi-label">कुल पंजीकरण</div>
+        </div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiToday">—</div>
+          <div class="kpi-label">आज के पंजीकरण</div>
+        </div>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-icon">🏫</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiActive">—</div>
+          <div class="kpi-label">सक्रिय केंद्र</div>
+        </div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiInactive">—</div>
+          <div class="kpi-label">निष्क्रिय केंद्र</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>📈 7-दिन का रुझान</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>🎓 कक्षा वितरण</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="classChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>👥 लिंग वितरण</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="genderChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance + Alerts -->
+    <div class="perf-alerts-row">
+      <div class="perf-card">
+        <h3>🏆 शीर्ष 5 केंद्र</h3>
+        <div id="top5List"><div class="no-data">डेटा नहीं</div></div>
+      </div>
+      <div class="perf-card">
+        <h3>📉 निम्न 5 केंद्र</h3>
+        <div id="bottom5List"><div class="no-data">डेटा नहीं</div></div>
+      </div>
+      <div class="alert-card">
+        <h3>🔔 अलर्ट</h3>
+        <div id="alertsList"><div class="no-data">कोई अलर्ट नहीं</div></div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-section">
+      <h3>📊 केंद्र-वार विवरण</h3>
+      <div class="table-search">
+        <input type="text" id="tableSearch" placeholder="केंद्र खोजें…" oninput="renderTable()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortTable('centre')">केंद्र नाम ↕</th>
+              <th class="sortable" onclick="sortTable('district')">जिला ↕</th>
+              <th class="sortable" onclick="sortTable('total')">कुल ↕</th>
+              <th class="sortable" onclick="sortTable('today')">आज ↕</th>
+              <th>स्थिति</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dash-footer">
+      Patrachar Shiksha Sansthan, UP &nbsp;|&nbsp; UP Madhyamik Shiksha Vibhag
+      &nbsp;|&nbsp; डेटा स्रोत: Google Sheet
+    </div>
+
+  </div><!-- /container -->
+</div><!-- /app -->
+
+<script>
+// ════════════════════════════════════════════
+// CONFIG — Google Sheet details
+// Sheet must be shared: "Anyone with link can view"
+// ═══════════════════════════════��════════════
+var SHEET_ID   = '1jvuYLOyxVv_n0yvb1v4cZHXDozOFInWXPJqqiwa3w8M';
+var SHEET_NAME = 'Registration Data';
+var TOTAL_CENTRES = 396; // total centres across UP
+
+// CSV URL (no API key needed for public sheets)
+var CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+              '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(SHEET_NAME);
+
+// ══════════════════════════════��═════════════
+// STATE
+// ════════════════════════════════════════════
+var allData      = [];   // all parsed rows
+var filteredData = [];   // after applying filters
+var charts       = {};   // chart instances
+var sortKey      = 'total';
+var sortAsc      = false;
+
+// ═════════════════��══════════════════════════
+// FETCH & PARSE
+// ════════════════════════════════════════════
+function loadData() {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('app').style.display     = 'none';
+  document.getElementById('errorBanner').style.display = 'none';
+
+  fetch(CSV_URL + '&t=' + Date.now())
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(function(csv) {
+      allData = parseCSV(csv);
+      populateDistrictFilter();
+      applyFilters();
+      document.getElementById('lastUpdated').textContent =
+        'अंतिम अपडेट: ' + formatTime(new Date());
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('app').style.display     = 'block';
+    })
+    .catch(function(err) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('app').style.display     = 'block';
+      var eb = document.getElementById('errorBanner');
+      eb.style.display = 'block';
+      eb.innerHTML = '⚠️ डेटा लोड नहीं हो सका। सुनिश्चित करें कि Google Sheet "Anyone with link can view" पर सेट है।<br><small>' + err.message + '</small>';
+    });
+}
+
+// Robust CSV parser (handles quoted fields, Hindi text, commas in values)
+function parseCSV(text) {
+  var lines  = text.split('\n');
+  if (lines.length < 2) return [];
+
+  var headers = splitCSVLine(lines[0]);
+  var rows    = [];
+
+  for (var i = 1; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    var cols = splitCSVLine(line);
+    var row  = {};
+    headers.forEach(function(h, idx) {
+      row[h.trim().replace(/^"|"$/g,'')] = (cols[idx] || '').trim().replace(/^"|"$/g,'');
+    });
+    // Skip header-repeat rows
+    if (row['Submission Date'] === 'Submission Date') continue;
+    // Parse date
+    row._date = parseDate(row['Submission Date']);
+    rows.push(row);
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  var result = [], cur = '', inQ = false;
+  for (var i = 0; i < line.length; i++) {
+    var c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
+
+// Parse "dd/MM/yyyy HH:mm" → Date
+function parseDate(str) {
+  if (!str) return null;
+  var m = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if (!m) return null;
+  return new Date(+m[3], +m[2] - 1, +m[1]);
+}
+
+// ══════════════════════════���═════════════════
+// FILTERS
+// ════════════════════════════════════════════
+function populateDistrictFilter() {
+  var sel = document.getElementById('filterDistrict');
+  var cur = sel.value;
+  // Clear existing options (except first)
+  while (sel.options.length > 1) sel.remove(1);
+  var districts = Array.from(new Set(allData.map(function(r){ return r['District']; })))
+    .filter(Boolean).sort();
+  districts.forEach(function(d) {
+    var opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    sel.appendChild(opt);
+  });
+  sel.value = cur;
+}
+
+function applyFilters() {
+  var dist   = document.getElementById('filterDistrict').value;
+  var cls    = document.getElementById('filterClass').value;
+  var gender = document.getElementById('filterGender').value;
+
+  filteredData = allData.filter(function(r) {
+    if (dist   && r['District'] !== dist)  return false;
+    if (cls    && r['Class']    !== cls)   return false;
+    if (gender && r['Gender']   !== gender) return false;
+    return true;
+  });
+
+  // Update filter context label
+  var parts = [];
+  if (dist)   parts.push(dist);
+  if (cls)    parts.push(cls === 'Class 11' ? 'कक्षा 11' : 'कक्षा 12');
+  if (gender) parts.push(gender === 'Male' ? 'पुरुष' : gender === 'Female' ? 'महिला' : 'अन्य');
+  document.getElementById('filterContext').textContent =
+    parts.length ? 'दिखाया जा रहा: ' + parts.join(' | ') : 'सभी जिले दिखाए जा रहे हैं';
+
+  renderAll();
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+var today = new Date();
+today.setHours(0,0,0,0);
+
+function isToday(d) {
+  if (!d) return false;
+  var dd = new Date(d); dd.setHours(0,0,0,0);
+  return dd.getTime() === today.getTime();
+}
+
+function isWithinDays(d, n) {
+  if (!d) return false;
+  var cutoff = new Date(today); cutoff.setDate(cutoff.getDate() - n);
+  return d >= cutoff;
+}
+
+function formatTime(d) {
+  return d.toLocaleTimeString('hi-IN', {hour:'2-digit', minute:'2-digit'}) +
+    ', ' + d.toLocaleDateString('hi-IN');
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return d.toLocaleDateString('hi-IN', {day:'2-digit', month:'short'});
+}
+
+// Group by field, count
+function countBy(data, field) {
+  var map = {};
+  data.forEach(function(r) {
+    var k = r[field] || 'अज्ञात';
+    map[k] = (map[k] || 0) + 1;
+  });
+  return map;
+}
+
+// ════════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════════
+function renderAll() {
+  renderKPIs();
+  renderTrendChart();
+  renderClassChart();
+  renderGenderChart();
+  renderPerformance();
+  renderAlerts();
+  renderTable();
+}
+
+// ═══════════════════��════════════════════════
+// KPIs
+// ════════════════════════════════════════════
+function renderKPIs() {
+  var total       = filteredData.length;
+  var todayCount  = filteredData.filter(function(r){ return isToday(r._date); }).length;
+  var activeCentres = new Set(filteredData.map(function(r){ return r['Centre Code'] + '|' + r['Centre Name']; })).size;
+  var inactiveCount = Math.max(0, TOTAL_CENTRES - activeCentres);
+
+  animateNumber('kpiTotal',    total);
+  animateNumber('kpiToday',    todayCount);
+  animateNumber('kpiActive',   activeCentres);
+  animateNumber('kpiInactive', inactiveCount);
+}
+
+function animateNumber(id, target) {
+  var el  = document.getElementById(id);
+  var cur = 0;
+  var step = Math.ceil(target / 20);
+  var timer = setInterval(function() {
+    cur = Math.min(cur + step, target);
+    el.textContent = cur.toLocaleString('hi-IN');
+    if (cur >= target) clearInterval(timer);
+  }, 30);
+}
+
+// ════════════════════════════════════════════
+// TREND CHART (7 days)
+// ════════════════════════════════════════════
+function renderTrendChart() {
+  var labels = [], counts = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(today); d.setDate(d.getDate() - i);
+    labels.push(formatDate(d));
+    var cnt = filteredData.filter(function(r) {
+      if (!r._date) return false;
+      var rd = new Date(r._date); rd.setHours(0,0,0,0);
+      return rd.getTime() === d.getTime();
+    }).length;
+    counts.push(cnt);
+  }
+
+  if (charts.trend) charts.trend.destroy();
+  charts.trend = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'पंजीकरण',
+        data: counts,
+        borderColor: '#2E75B6',
+        backgroundColor: 'rgba(46,117,182,0.1)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#1F4E79',
+        pointRadius: 5,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// CLASS CHART
+// ════════════════════════════════════════════
+function renderClassChart() {
+  var map = countBy(filteredData, 'Class');
+  var labels = Object.keys(map);
+  var data   = Object.values(map);
+
+  if (charts.cls) charts.cls.destroy();
+  charts.cls = new Chart(document.getElementById('classChart'), {
+    type: 'doughnut',
+    data: {
+      labels: labels.map(function(l){ return l === 'Class 11' ? 'कक्षा 11' : l === 'Class 12' ? 'कक्षा 12' : l; }),
+      datasets: [{ data: data, backgroundColor: ['#2E75B6','#27ae60','#f39c12'], borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// GENDER CHART
+// ════════════════════════════════════════════
+function renderGenderChart() {
+  var map = countBy(filteredData, 'Gender');
+  var labelMap = { 'Male': 'पुरुष', 'Female': 'महिला', 'Other': 'अन्य' };
+  var labels = Object.keys(map).map(function(k){ return labelMap[k] || k; });
+  var data   = Object.values(map);
+
+  if (charts.gender) charts.gender.destroy();
+  charts.gender = new Chart(document.getElementById('genderChart'), {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{ data: data, backgroundColor: ['#3498db','#e91e8c','#9b59b6'], borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// PERFORMANCE — Top 5 / Bottom 5
+// ════════════════════════════════════════════
+function renderPerformance() {
+  // Build centre stats
+  var centreMap = {};
+  filteredData.forEach(function(r) {
+    var key = r['Centre Name'] || 'अज्ञात';
+    if (!centreMap[key]) centreMap[key] = { name: key, district: r['District'] || '', total: 0 };
+    centreMap[key].total++;
+  });
+  var centres = Object.values(centreMap).sort(function(a,b){ return b.total - a.total; });
+
+  if (!centres.length) {
+    document.getElementById('top5List').innerHTML = '<div class="no-data">डेटा नहीं</div>';
+    document.getElementById('bottom5List').innerHTML = '<div class="no-data">डेटा नहीं</div>';
+    return;
+  }
+
+  var maxCount = centres[0].total;
+  var top5    = centres.slice(0, 5);
+  var bottom5 = centres.slice(-5).reverse();
+
+  document.getElementById('top5List').innerHTML = top5.map(function(c, i) {
+    var pct = Math.round((c.total / maxCount) * 100);
+    return '<div class="perf-row">' +
+      '<div class="perf-rank">' + (i+1) + '</div>' +
+      '<div class="perf-name">' + truncate(c.name, 28) + '<small>' + c.district + '</small></div>' +
+      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%"></div></div></div>' +
+      '<div class="perf-count">' + c.total + '</div>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('bottom5List').innerHTML = bottom5.map(function(c, i) {
+    var pct = Math.round((c.total / maxCount) * 100);
+    return '<div class="perf-row">' +
+      '<div class="perf-rank" style="background:var(--red)">' + (i+1) + '</div>' +
+      '<div class="perf-name">' + truncate(c.name, 28) + '<small>' + c.district + '</small></div>' +
+      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%;background:var(--red)"></div></div></div>' +
+      '<div class="perf-count" style="color:var(--red)">' + c.total + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// ALERTS
+// ════════════════════════════════════════════
+function renderAlerts() {
+  var alerts = [];
+
+  // Count active centres
+  var activeCentres = new Set(filteredData.map(function(r){ return r['Centre Name']; }));
+  var inactiveCount = Math.max(0, TOTAL_CENTRES - activeCentres.size);
+
+  if (inactiveCount > 0) {
+    alerts.push({
+      type: 'danger',
+      icon: '🔴',
+      title: inactiveCount + ' केंद्रों पर अभी तक कोई पंजीकरण नहीं',
+      sub: 'कुल ' + TOTAL_CENTRES + ' में से ' + activeCentres.size + ' केंद्र सक्रिय हैं'
+    });
+  }
+
+  // Centres with no entry in last 3 days
+  var recentCentres = new Set(
+    filteredData.filter(function(r){ return isWithinDays(r._date, 3); })
+      .map(function(r){ return r['Centre Name']; })
+  );
+  var slowCentres = [];
+  activeCentres.forEach(function(c) {
+    if (!recentCentres.has(c)) slowCentres.push(c);
+  });
+  if (slowCentres.length > 0) {
+    alerts.push({
+      type: 'warn',
+      icon: '🟡',
+      title: slowCentres.length + ' केंद्रों में पिछले 3 दिनों से कोई पंजीकरण नहीं',
+      sub: slowCentres.slice(0,3).map(truncate20).join(', ') + (slowCentres.length > 3 ? '...' : '')
+    });
+  }
+
+  // Today's entries
+  var todayCount = filteredData.filter(function(r){ return isToday(r._date); }).length;
+  if (todayCount === 0 && filteredData.length > 0) {
+    alerts.push({
+      type: 'warn',
+      icon: '⏰',
+      title: 'आज कोई पंजीकरण नहीं हुआ',
+      sub: 'केंद्र संचालकों को सूचित करें'
+    });
+  } else if (todayCount > 0) {
+    alerts.push({
+      type: 'info',
+      icon: '✅',
+      title: 'आज ' + todayCount + ' पंजीकरण हुए',
+      sub: recentCentres.size + ' केंद्र पिछले 3 दिनों में सक्रिय'
+    });
+  }
+
+  if (!alerts.length) {
+    document.getElementById('alertsList').innerHTML = '<div class="no-data">✅ सब सामान्य है</div>';
+    return;
+  }
+
+  document.getElementById('alertsList').innerHTML = alerts.map(function(a) {
+    return '<div class="alert-item ' + a.type + '">' +
+      '<span class="alert-icon">' + a.icon + '</span>' +
+      '<div class="alert-text"><strong>' + a.title + '</strong><span>' + a.sub + '</span></div>' +
+      '</div>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// TABLE
+// ════════════════════════════════════════════
+function renderTable() {
+  var search = (document.getElementById('tableSearch').value || '').toLowerCase();
+
+  // Build centre stats from filteredData
+  var centreMap = {};
+  filteredData.forEach(function(r) {
+    var key = r['Centre Name'] || 'अज्ञात';
+    if (!centreMap[key]) centreMap[key] = {
+      name: key, district: r['District'] || '', total: 0, today: 0, hasAny: false
+    };
+    centreMap[key].total++;
+    centreMap[key].hasAny = true;
+    if (isToday(r._date)) centreMap[key].today++;
+  });
+
+  var rows = Object.values(centreMap);
+
+  // Sort
+  rows.sort(function(a, b) {
+    var av = a[sortKey] || 0, bv = b[sortKey] || 0;
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return sortAsc ? -1 : 1;
+    if (av > bv) return sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  // Search filter
+  if (search) {
+    rows = rows.filter(function(r) {
+      return r.name.toLowerCase().includes(search) ||
+             r.district.toLowerCase().includes(search);
+    });
+  }
+
+  if (!rows.length) {
+    document.getElementById('tableBody').innerHTML =
+      '<tr><td colspan="5" class="no-data">कोई डेटा नहीं मिला</td></tr>';
+    return;
+  }
+
+  document.getElementById('tableBody').innerHTML = rows.map(function(r) {
+    var status, badge;
+    if (r.today > 0)      { status = 'active';   badge = 'सक्रिय'; }
+    else if (r.hasAny)    { status = 'slow';     badge = 'धीमा'; }
+    else                  { status = 'inactive'; badge = 'निष्क्रिय'; }
+
+    return '<tr>' +
+      '<td>' + r.name + '</td>' +
+      '<td>' + r.district + '</td>' +
+      '<td><strong>' + r.total + '</strong></td>' +
+      '<td>' + r.today + '</td>' +
+      '<td><span class="status-badge status-' + status + '">' + badge + '</span></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = false; }
+  renderTable();
+}
+
+// ═════════════════���══════════════════════════
+// UTILS
+// ════════════════════════════════════════════
+function truncate(str, n) { return str.length > n ? str.slice(0, n) + '…' : str; }
+function truncate20(str)   { return truncate(str, 20); }
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+loadData();
+</script>
+</body>
+</html>
