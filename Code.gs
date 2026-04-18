@@ -28,6 +28,34 @@ function doPost(e) {
   }
 }
 
+// ── One-time sheet setup (run manually once) ──
+function setupSheet() {
+  var ss    = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
+
+  sheet.clearContents();
+
+  var headers = [
+    'Submission Date', 'District', 'Centre Name', 'Centre Code',
+    'Class', 'Stream', 'Category',
+    'Student Name', 'Father Name', 'Mother Name',
+    'Date of Birth', 'Gender', 'Aadhaar No', 'Mobile No',
+    'Prev Exam', 'Prev Year', 'Prev Board', 'Fees Submitted'
+  ];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+
+  sheet.getRange(1, 1, 1, headers.length)
+    .setBackground('#1F4E79')
+    .setFontColor('white')
+    .setFontWeight('bold')
+    .setFontSize(11);
+
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, headers.length);
+
+  Logger.log('Sheet setup complete!');
+}
+
 // ── Submit form data ──
 // Sheet columns (18):
 //   A  Submission Date
