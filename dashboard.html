@@ -442,23 +442,12 @@ tbody td { padding: 10px 14px; }
         <div id="top5List"><div class="no-data">डेटा नहीं</div></div>
       </div>
       <div class="perf-card">
-        <h3>📉 निम्न 5 केंद्र</h3>
-        <div id="bottom5List"><div class="no-data">डेटा नहीं</div></div>
+        <h3>🏆 शीर्ष 5 जिले</h3>
+        <div id="topDistrictList"><div class="no-data">डेटा नहीं</div></div>
       </div>
       <div class="alert-card">
         <h3>🔔 अलर्ट</h3>
         <div id="alertsList"><div class="no-data">कोई अलर्ट नहीं</div></div>
-      </div>
-    </div>
-
-    <div class="perf-alerts-row districts-row">
-      <div class="perf-card">
-        <h3>🏆 शीर्ष 5 जिले</h3>
-        <div id="topDistrictList"><div class="no-data">डेटा नहीं</div></div>
-      </div>
-      <div class="perf-card">
-        <h3>📉 निम्न 5 जिले</h3>
-        <div id="bottomDistrictList"><div class="no-data">डेटा नहीं</div></div>
       </div>
     </div>
 
@@ -502,6 +491,25 @@ tbody td { padding: 10px 14px; }
         </tr></thead>
         <tbody id="printBody"></tbody>
       </table>
+    </div>
+
+    <!-- Zero Registration Centres -->
+    <div class="table-section" style="margin-top:20px;">
+      <h3>🔴 शून्य पंजीकरण केंद्र — <span id="zeroCount">0</span> केंद्र</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:48px">#</th>
+              <th>केंद्र नाम</th>
+              <th>जिला</th>
+            </tr>
+          </thead>
+          <tbody id="zeroTableBody">
+            <tr><td colspan="3" class="no-data">लोड हो रहा है…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="dash-footer">
@@ -930,10 +938,8 @@ function renderPerformance() {
     return r['District'] || '';
   });
 
-  renderRankingPair('top5List', 'bottom5List', centres, {
-    maxNameLength: 28,
-    topMeta: function(item) { return item.meta; },
-    bottomMeta: function(item) { return item.meta; }
+  renderTop5('top5List', centres, { maxNameLength: 28,
+    metaFn: function(item) { return item.meta; }
   });
 
   var districts = aggregatePerformanceList(filteredData, function(r) {
@@ -942,14 +948,8 @@ function renderPerformance() {
     return r['Centre Name'] || '';
   });
 
-  renderRankingPair('topDistrictList', 'bottomDistrictList', districts, {
-    maxNameLength: 32,
-    topMeta: function(item) {
-      return item.metaCount + ' सक्रिय केंद्र';
-    },
-    bottomMeta: function(item) {
-      return item.metaCount + ' सक्रिय केंद्र';
-    }
+  renderTop5('topDistrictList', districts, { maxNameLength: 32,
+    metaFn: function(item) { return item.metaCount + ' सक्रिय केंद्र'; }
   });
 }
 
@@ -986,37 +986,25 @@ function aggregatePerformanceList(data, nameGetter, metaGetter) {
   });
 }
 
-function renderRankingPair(topId, bottomId, items, options) {
-  if (!items.length) {
-    document.getElementById(topId).innerHTML = '<div class="no-data">डेटा नहीं</div>';
-    document.getElementById(bottomId).innerHTML = '<div class="no-data">डेटा नहीं</div>';
+function renderTop5(elId, items, options) {
+  var el = document.getElementById(elId);
+  var activeItems = items.filter(function(x) { return x.total > 0; });
+  if (!activeItems.length) {
+    el.innerHTML = '<div class="no-data">डेटा नहीं</div>';
     return;
   }
+  var top5     = activeItems.slice(0, 5);
+  var maxCount = activeItems[0].total || 1;
 
-  var topItems = items.slice(0, 5);
-  var bottomItems = items.slice(-5).reverse();
-  var maxCount = items[0].total || 1;
-
-  document.getElementById(topId).innerHTML = renderRankingList(topItems, maxCount, false, options);
-  document.getElementById(bottomId).innerHTML = renderRankingList(bottomItems, maxCount, true, options);
-}
-
-function renderRankingList(items, maxCount, isBottom, options) {
-  return items.map(function(item, i) {
-    var pct = Math.max(8, Math.round((item.total / maxCount) * 100));
-    var meta = isBottom
-      ? (options.bottomMeta ? options.bottomMeta(item) : item.meta)
-      : (options.topMeta ? options.topMeta(item) : item.meta);
-    var rankStyle = isBottom ? ' style="background:var(--red)"' : '';
-    var barStyle = isBottom ? ';background:var(--red)' : '';
-    var countStyle = isBottom ? ' style="color:var(--red)"' : '';
-
+  el.innerHTML = top5.map(function(item, i) {
+    var pct  = Math.max(8, Math.round((item.total / maxCount) * 100));
+    var meta = options.metaFn ? options.metaFn(item) : (item.meta || '');
     return '<div class="perf-row">' +
-      '<div class="perf-rank"' + rankStyle + '>' + (i+1) + '</div>' +
+      '<div class="perf-rank">' + (i+1) + '</div>' +
       '<div class="perf-name">' + truncate(item.name, options.maxNameLength || 28) +
         (meta ? '<small>' + meta + '</small>' : '') + '</div>' +
-      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%' + barStyle + '"></div></div></div>' +
-      '<div class="perf-count"' + countStyle + '>' + item.total + '</div>' +
+      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%"></div></div></div>' +
+      '<div class="perf-count">' + item.total + '</div>' +
       '</div>';
   }).join('');
 }
@@ -1145,11 +1133,13 @@ function buildCentreRows(search) {
 
 function renderTable() {
   var search = document.getElementById('tableSearch').value || '';
-  var rows = buildCentreRows(search);
+  var allRows = buildCentreRows(search);
+  var rows = allRows.filter(function(r) { return r.hasAny; });
 
   if (!rows.length) {
     document.getElementById('tableBody').innerHTML =
       '<tr><td colspan="7" class="no-data">कोई डेटा नहीं मिला</td></tr>';
+    renderZeroTable(search);
     return;
   }
 
@@ -1169,6 +1159,28 @@ function renderTable() {
       '<td><span class="status-badge status-' + status + '">' + badge + '</span></td>' +
       '</tr>';
   }).join('');
+
+  renderZeroTable(search);
+}
+
+function renderZeroTable(search) {
+  var allRows = buildCentreRows(search);
+  var zeroRows = allRows.filter(function(r) { return !r.hasAny; });
+  var el = document.getElementById('zeroTableBody');
+  var countEl = document.getElementById('zeroCount');
+  if (countEl) countEl.textContent = zeroRows.length;
+
+  if (!zeroRows.length) {
+    if (el) el.innerHTML = '<tr><td colspan="3" class="no-data">✅ सभी केंद्रों पर पंजीकरण हुआ है</td></tr>';
+    return;
+  }
+  if (el) el.innerHTML = zeroRows.map(function(r, i) {
+    return '<tr>' +
+      '<td>' + (i+1) + '</td>' +
+      '<td>' + r.name + '</td>' +
+      '<td>' + r.district + '</td>' +
+      '</tr>';
+  }).join('');
 }
 
 function sortTable(key) {
@@ -1181,7 +1193,7 @@ function sortTable(key) {
 // DOWNLOAD — CSV
 // ════════════════════════════════════════════
 function downloadCSV() {
-  var rows = buildCentreRows('');
+  var rows = buildCentreRows('').filter(function(r) { return r.hasAny; });
 
   // Group by district for subtotals
   var districtOrder = [];
@@ -1241,7 +1253,7 @@ function downloadCSV() {
 // DOWNLOAD — PDF (print)
 // ════════════════════════════════════════════
 function downloadPDF() {
-  var rows = buildCentreRows('');
+  var rows = buildCentreRows('').filter(function(r) { return r.hasAny; });
 
   var districtOrder = [];
   var districtMap = {};
