@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Patrachar Shiksha — Student Registration</title>
+<title>पत्राचार शिक्षा — छात्र पंजीकरण</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
@@ -144,151 +144,151 @@
 <div class="header">
   <div class="header-logo">🎓</div>
   <div class="header-text">
-    <h1>Patrachar Shiksha Sansthan — UP</h1>
-    <p>Student Registration Form | UP Madhyamik Shiksha Vibhag</p>
+    <h1>पत्राचार शिक्षा संस्थान — उत्तर प्रदेश</h1>
+    <p>छात्र पंजीकरण फॉर्म | उ.प्र. माध्यमिक शिक्षा विभाग</p>
   </div>
 </div>
 
 <div class="container">
   <form id="regForm" novalidate>
 
-    <!-- SECTION 1: Centre Details -->
+    <!-- SECTION 1: केंद्र विवरण -->
     <div class="section">
-      <div class="section-header">🏫 Centre Details</div>
+      <div class="section-header">🏫 केंद्र विवरण</div>
       <div class="section-body">
         <div class="grid-2">
           <div class="form-group">
-            <label>District <span class="req">*</span></label>
+            <label>जिला <span class="req">*</span></label>
             <select id="district" required>
-              <option value="">-- Select District --</option>
+              <option value="">-- जिला चुनें --</option>
             </select>
-            <span class="err-msg" id="err-district">Please select a district.</span>
+            <span class="err-msg" id="err-district">कृपया जिला चुनें।</span>
           </div>
           <div class="form-group">
-            <label>Registration Centre <span class="req">*</span></label>
+            <label>पंजीकरण केंद्र <span class="req">*</span></label>
             <select id="centre" required disabled>
-              <option value="">-- Select Centre --</option>
+              <option value="">-- केंद्र चुनें --</option>
             </select>
-            <span class="err-msg" id="err-centre">Please select a centre.</span>
+            <span class="err-msg" id="err-centre">कृपया केंद्र चुनें।</span>
           </div>
           <div class="form-group">
-            <label>Centre Code</label>
-            <input type="text" id="centreCode" readonly placeholder="Auto-filled">
+            <label>केंद्र कोड</label>
+            <input type="text" id="centreCode" readonly placeholder="स्वतः भरेगा">
           </div>
           <div class="form-group">
-            <label>Class <span class="req">*</span></label>
+            <label>कक्षा <span class="req">*</span></label>
             <select id="classYear" required>
-              <option value="">-- Select Class --</option>
-              <option value="Class 11">Class 11 (Two Year)</option>
-              <option value="Class 12">Class 12 (One Year)</option>
+              <option value="">-- कक्षा चुनें --</option>
+              <option value="Class 11">कक्षा 11 (दो वर्षीय)</option>
+              <option value="Class 12">कक्षा 12 (एक वर्षीय)</option>
             </select>
-            <span class="err-msg" id="err-classYear">Please select class.</span>
+            <span class="err-msg" id="err-classYear">कृपया कक्षा चुनें।</span>
           </div>
           <div class="form-group">
-            <label>Stream <span class="req">*</span></label>
+            <label>संकाय <span class="req">*</span></label>
             <select id="stream" required>
-              <option value="">-- Select Stream --</option>
-              <option value="Humanities">Humanities (कला)</option>
-              <option value="Science">Science (विज्ञान)</option>
-              <option value="Commerce">Commerce (वाणिज्य)</option>
+              <option value="">-- संकाय चुनें --</option>
+              <option value="Humanities">कला (Humanities)</option>
+              <option value="Science">विज्ञान (Science)</option>
+              <option value="Commerce">वाणिज्य (Commerce)</option>
             </select>
-            <span class="err-msg" id="err-stream">Please select stream.</span>
+            <span class="err-msg" id="err-stream">कृपया संकाय चुनें।</span>
           </div>
           <div class="form-group">
-            <label>Category <span class="req">*</span></label>
+            <label>वर्ग <span class="req">*</span></label>
             <select id="category" required>
-              <option value="">-- Select Category --</option>
-              <option value="General">General (सामान्य)</option>
-              <option value="OBC">OBC (अन्य पिछड़ा वर्ग)</option>
-              <option value="SC">SC (अनुसूचित जाति)</option>
-              <option value="ST">ST (अनुसूचित जनजाति)</option>
+              <option value="">-- वर्ग चुनें --</option>
+              <option value="General">सामान्य (General)</option>
+              <option value="OBC">अन्य पिछड़ा वर्ग (OBC)</option>
+              <option value="SC">अनुसूचित जाति (SC)</option>
+              <option value="ST">अनुसूचित जनजाति (ST)</option>
             </select>
-            <span class="err-msg" id="err-category">Please select category.</span>
+            <span class="err-msg" id="err-category">कृपया वर्ग चुनें।</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 2: Personal Details -->
+    <!-- SECTION 2: व्यक्तिगत विवरण -->
     <div class="section">
-      <div class="section-header">👤 Personal Details</div>
+      <div class="section-header">👤 व्यक्तिगत विवरण</div>
       <div class="section-body">
         <div class="grid-2">
           <div class="form-group span-2">
-            <label>Student's Name <span class="req">*</span></label>
-            <input type="text" id="studentName" placeholder="Full name as per documents" required>
-            <span class="err-msg" id="err-studentName">Please enter student name.</span>
+            <label>छात्र / छात्रा का नाम <span class="req">*</span></label>
+            <input type="text" id="studentName" placeholder="दस्तावेज़ के अनुसार पूरा नाम" required>
+            <span class="err-msg" id="err-studentName">कृपया छात्र का नाम भरें।</span>
           </div>
           <div class="form-group">
-            <label>Father's Name</label>
-            <input type="text" id="fatherName" placeholder="Father's full name">
+            <label>पिता का नाम</label>
+            <input type="text" id="fatherName" placeholder="पिता का पूरा नाम">
           </div>
           <div class="form-group">
-            <label>Mother's Name</label>
-            <input type="text" id="motherName" placeholder="Mother's full name">
+            <label>माता का नाम</label>
+            <input type="text" id="motherName" placeholder="माता का पूरा नाम">
           </div>
           <div class="form-group">
-            <label>Date of Birth</label>
+            <label>जन्म तिथि</label>
             <input type="date" id="dob" max="">
           </div>
           <div class="form-group">
-            <label>Gender <span class="req">*</span></label>
+            <label>लिंग <span class="req">*</span></label>
             <div class="radio-group" id="genderGroup">
-              <label><input type="radio" name="gender" value="Male"> Male</label>
-              <label><input type="radio" name="gender" value="Female"> Female</label>
-              <label><input type="radio" name="gender" value="Other"> Other</label>
+              <label><input type="radio" name="gender" value="Male"> पुरुष</label>
+              <label><input type="radio" name="gender" value="Female"> महिला</label>
+              <label><input type="radio" name="gender" value="Other"> अन्य</label>
             </div>
-            <span class="err-msg" id="err-gender">Please select gender.</span>
+            <span class="err-msg" id="err-gender">कृपया लिंग चुनें।</span>
           </div>
           <div class="form-group">
-            <label>Aadhaar Number</label>
-            <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number (optional)" maxlength="12" inputmode="numeric">
-            <span class="err-msg" id="err-aadhaar">If entered, must be 12 digits.</span>
+            <label>आधार संख्या</label>
+            <input type="text" id="aadhaar" placeholder="12 अंकों की आधार संख्या (वैकल्पिक)" maxlength="12" inputmode="numeric">
+            <span class="err-msg" id="err-aadhaar">यदि भरें तो 12 अंक होने चाहिए।</span>
           </div>
           <div class="form-group">
-            <label>Mobile Number <span class="req">*</span></label>
-            <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" required>
-            <span class="err-msg" id="err-mobile">Enter valid 10-digit mobile number.</span>
+            <label>मोबाइल नंबर <span class="req">*</span></label>
+            <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" inputmode="numeric" required>
+            <span class="err-msg" id="err-mobile">10 अंकों का सही मोबाइल नंबर भरें।</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 3: Previous Qualification -->
+    <!-- SECTION 3: पूर्व योग्यता -->
     <div class="section">
-      <div class="section-header">📋 Previous Qualification</div>
+      <div class="section-header">📋 पूर्व शैक्षिक योग्यता</div>
       <div class="section-body">
         <div class="grid-3">
           <div class="form-group">
-            <label>Exam Passed</label>
+            <label>उत्तीर्ण परीक्षा</label>
             <select id="prevExam">
-              <option value="">-- Select Exam --</option>
-              <option value="High School (Class 10)">High School (Class 10)</option>
-              <option value="Intermediate (Class 12)">Intermediate (Class 12)</option>
-              <option value="Other">Other</option>
+              <option value="">-- परीक्षा चुनें --</option>
+              <option value="High School (Class 10)">हाई स्कूल (कक्षा 10)</option>
+              <option value="Intermediate (Class 12)">इंटरमीडिएट (कक्षा 12)</option>
+              <option value="Other">अन्य</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Passing Year</label>
-            <input type="number" id="prevYear" placeholder="e.g. 2023" min="1980" max="2026">
-            <span class="err-msg" id="err-prevYear">Enter valid year (1980–2026).</span>
+            <label>उत्तीर्ण वर्ष</label>
+            <input type="number" id="prevYear" placeholder="जैसे: 2023" min="1980" max="2026">
+            <span class="err-msg" id="err-prevYear">सही वर्ष भरें (1980–2026)।</span>
           </div>
           <div class="form-group">
-            <label>Board</label>
-            <input type="text" id="prevBoard" placeholder="e.g. UP Board, CBSE">
+            <label>बोर्ड का नाम</label>
+            <input type="text" id="prevBoard" placeholder="जैसे: UP Board, CBSE">
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 4: Fees -->
+    <!-- SECTION 4: शुल्क -->
     <div class="section">
-      <div class="section-header">💰 Fees Details</div>
+      <div class="section-header">💰 शुल्क विवरण</div>
       <div class="section-body">
         <div class="grid-2">
           <div class="form-group">
-            <label>Fees Submitted (₹)</label>
-            <input type="number" id="feesSubmitted" placeholder="Amount in rupees (optional)" min="0">
+            <label>जमा शुल्क (₹)</label>
+            <input type="number" id="feesSubmitted" placeholder="रुपये में राशि (वैकल्पिक)" min="0">
           </div>
         </div>
       </div>
@@ -296,7 +296,7 @@
 
     <!-- Submit -->
     <div class="submit-wrap">
-      <button type="submit" class="btn-submit" id="submitBtn">Submit Registration</button>
+      <button type="submit" class="btn-submit" id="submitBtn">पंजीकरण जमा करें</button>
     </div>
 
   </form>
@@ -401,7 +401,7 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvjUkjWtJrqUizCYclbY5
 document.getElementById('district').addEventListener('change', function() {
   var centreSel = document.getElementById('centre');
   var codeField = document.getElementById('centreCode');
-  centreSel.innerHTML = '<option value="">-- Select Centre --</option>';
+  centreSel.innerHTML = '<option value="">-- केंद्र चुनें --</option>';
   codeField.value = '';
   centreSel.disabled = true;
 
@@ -494,13 +494,13 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
   e.preventDefault();
   if (!validate()) {
     window.scrollTo({top: 0, behavior: 'smooth'});
-    showToast('Please fill all required fields correctly.', 'error');
+    showToast('कृपया सभी आवश्यक फील्ड सही भरें।', 'error');
     return;
   }
 
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Submitting…';
+  btn.textContent = 'जमा हो रहा है…';
 
   var gender = document.querySelector('input[name="gender"]:checked');
   var data = {
@@ -529,18 +529,18 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
       .withSuccessHandler(function(res) {
         btn.disabled = false; btn.textContent = 'Submit Registration';
         if (res && res.success) {
-          showToast('Registration submitted successfully!', 'success');
+          showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
           document.getElementById('regForm').reset();
-          document.getElementById('centre').innerHTML = '<option value="">-- Select Centre --</option>';
+          document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
           document.getElementById('centre').disabled = true;
           document.getElementById('centreCode').value = '';
         } else {
-          showToast('Error: ' + (res ? res.error : 'Unknown error'), 'error');
+          showToast('त्रुटि: ' + (res ? res.error : 'अज्ञात त्रुटि'), 'error');
         }
       })
       .withFailureHandler(function(err) {
-        btn.disabled = false; btn.textContent = 'Submit Registration';
-        showToast('Submission failed: ' + err.message, 'error');
+        btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
+        showToast('जमा करने में विफल: ' + err.message, 'error');
       })
       .submitForm(data);
   } else {
@@ -553,18 +553,18 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
     .then(function(res) {
       btn.disabled = false; btn.textContent = 'Submit Registration';
       if (res && res.success) {
-        showToast('Registration submitted successfully!', 'success');
+        showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
         document.getElementById('regForm').reset();
-        document.getElementById('centre').innerHTML = '<option value="">-- Select Centre --</option>';
+        document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
         document.getElementById('centre').disabled = true;
         document.getElementById('centreCode').value = '';
       } else {
-        showToast('Error: ' + (res ? res.error : 'Unknown error'), 'error');
+        showToast('त्रुटि: ' + (res ? res.error : 'अज्ञात त्रुटि'), 'error');
       }
     })
     .catch(function(err) {
-      btn.disabled = false; btn.textContent = 'Submit Registration';
-      showToast('Network error. Please try again.', 'error');
+      btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
+      showToast('नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।', 'error');
     });
   }
 });
