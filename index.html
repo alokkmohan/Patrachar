@@ -217,7 +217,7 @@
           <div class="form-group span-2">
             <label>छात्र / छात्रा का नाम <span class="req">*</span></label>
             <input type="text" id="studentName" placeholder="दस्तावेज़ के अनुसार पूरा नाम" required>
-            <span class="err-msg" id="err-studentName">कृपया छात्र का नाम भरें।</span>
+            <span class="err-msg" id="err-studentName">कृपया सही नाम भरें (हिंदी या अंग्रेज़ी में, कम से कम 2 अक्षर)।</span>
           </div>
           <div class="form-group">
             <label>पिता का नाम</label>
@@ -247,8 +247,8 @@
           </div>
           <div class="form-group">
             <label>मोबाइल नंबर <span class="req">*</span></label>
-            <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" inputmode="numeric" required>
-            <span class="err-msg" id="err-mobile">10 अंकों का सही मोबाइल नंबर भरें।</span>
+            <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर (6/7/8/9 से शुरू)" maxlength="10" inputmode="numeric" required>
+            <span class="err-msg" id="err-mobile">वैध मोबाइल नंबर भरें — 10 अंक, 6/7/8/9 से शुरू हो।</span>
           </div>
         </div>
       </div>
@@ -444,8 +444,16 @@ function validate() {
   check('classYear',   'err-classYear',   null);
   check('stream',      'err-stream',      null);
   check('category',    'err-category',    null);
-  check('studentName', 'err-studentName', null);
-  check('mobile',      'err-mobile',      function(v){ return /^\d{10}$/.test(v); });
+  check('studentName', 'err-studentName', function(v){
+    // Allow Hindi (Devanagari), English letters, spaces — min 2 chars
+    return v.length >= 2 && /^[\u0900-\u097Fa-zA-Z\s]+$/.test(v);
+  });
+  check('mobile',      'err-mobile',      function(v){
+    if (!/^[6-9]\d{9}$/.test(v)) return false;   // 10 digits, starts with 6-9
+    if (/^(\d)\1{9}$/.test(v))   return false;   // not all same: 9999999999, 0000000000
+    if (v === '1234567890')       return false;   // not sequential
+    return true;
+  });
 
   // Gender radio (mandatory)
   var gender = document.querySelector('input[name="gender"]:checked');
