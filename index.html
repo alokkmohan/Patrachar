@@ -137,6 +137,37 @@
   }
   #toast.success { background: #27ae60; color: white; }
   #toast.error   { background: #c0392b; color: white; }
+
+  /* Success Modal */
+  #successModal {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.55);
+    align-items: center; justify-content: center;
+  }
+  #successModal.show { display: flex; }
+  .modal-box {
+    background: white; border-radius: 14px;
+    padding: 36px 32px; text-align: center;
+    max-width: 360px; width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    animation: popIn 0.25s ease;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+  .modal-icon { font-size: 52px; margin-bottom: 12px; }
+  .modal-box h2 { color: #27ae60; font-size: 20px; margin-bottom: 8px; }
+  .modal-box p  { color: #555; font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+  .btn-ok {
+    background: #1F4E79; color: white;
+    border: none; padding: 12px 40px;
+    border-radius: 8px; font-size: 15px;
+    font-weight: 700; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-ok:hover { background: #2E75B6; }
 </style>
 </head>
 <body>
@@ -229,7 +260,8 @@
           </div>
           <div class="form-group">
             <label>जन्म तिथि</label>
-            <input type="date" id="dob" max="">
+            <input type="date" id="dob">
+            <span class="err-msg" id="err-dob">आयु कम से कम 14 वर्ष होनी चाहिए।</span>
           </div>
           <div class="form-group">
             <label>लिंग <span class="req">*</span></label>
@@ -300,6 +332,19 @@
 </div>
 
 <div id="toast"></div>
+
+<!-- Success Modal -->
+<div id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon">✅</div>
+    <h2>पंजीकरण सफल!</h2>
+    <p>आपका पंजीकरण सफलतापूर्वक जमा हो गया है।<br>Sheet में कुछ ही देर में दिखेगा।</p>
+    <button class="btn-ok" onclick="closeSuccessModal()">ठीक है</button>
+  </div>
+</div>
+
+<!-- Hidden iframe for form submission (bypass CORS) -->
+<iframe id="gsFrame" name="gsFrame" style="display:none;"></iframe>
 
 <script>
 // ── Centre Data ──
@@ -383,6 +428,27 @@ var CENTRES_DATA = {
 
 // ── Apps Script Web App URL (update after redeployment if needed) ──
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvjUkjWtJrqUizCYclbY5C2xA66RZo03gAsnhq2TYn4-Qm9RtMS0UbJIsk9uDueYZfUg/exec';
+
+// ── Set DOB max date (must be at least 14 years old) ──
+(function() {
+  var max14 = new Date();
+  max14.setFullYear(max14.getFullYear() - 14);
+  document.getElementById('dob').max = max14.toISOString().split('T')[0];
+})();
+
+// ── Success Modal ──
+function showSuccessModal() {
+  document.getElementById('successModal').classList.add('show');
+}
+function closeSuccessModal() {
+  document.getElementById('successModal').classList.remove('show');
+  document.getElementById('regForm').reset();
+  document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
+  document.getElementById('centre').disabled = true;
+  document.getElementById('centreCode').value = '';
+  // Reset prevExam dropdown
+  document.getElementById('prevExam').innerHTML = '<option value="">-- पहले कक्षा चुनें --</option>';
+}
 
 // ── Populate Districts ──
 (function() {
@@ -480,6 +546,25 @@ function validate() {
   if (!gender) { gErr.style.display = 'block'; ok = false; }
   else          { gErr.style.display = 'none'; }
 
+  // DOB — optional but if filled, age must be >= 14
+  var dobVal = document.getElementById('dob').value;
+  var dobErr = document.getElementById('err-dob');
+  if (dobVal) {
+    var dobDate = new Date(dobVal);
+    var minAge  = new Date();
+    minAge.setFullYear(minAge.getFullYear() - 14);
+    if (dobDate > minAge) {
+      document.getElementById('dob').classList.add('error');
+      dobErr.style.display = 'block'; ok = false;
+    } else {
+      document.getElementById('dob').classList.remove('error');
+      dobErr.style.display = 'none';
+    }
+  } else {
+    document.getElementById('dob').classList.remove('error');
+    dobErr.style.display = 'none';
+  }
+
   // Aadhaar — optional but if filled must be 12 digits
   var aadhaarVal = document.getElementById('aadhaar').value.trim();
   var aadhaarErr = document.getElementById('err-aadhaar');
@@ -550,47 +635,45 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
     feesSubmitted: document.getElementById('feesSubmitted').value
   };
 
-  // Try google.script.run first (Apps Script context), else fetch (GitHub Pages)
+  // Apps Script context (doGet-served form)
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     google.script.run
       .withSuccessHandler(function(res) {
-        btn.disabled = false; btn.textContent = 'Submit Registration';
-        if (res && res.success) {
-          showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
-          document.getElementById('regForm').reset();
-          document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
-          document.getElementById('centre').disabled = true;
-          document.getElementById('centreCode').value = '';
-        } else {
-          showToast('त्रुटि: ' + (res ? res.error : 'अज्ञात त्रुटि'), 'error');
-        }
+        btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
+        if (res && res.success) { showSuccessModal(); }
+        else { showToast('त्रुटि: ' + (res ? res.error : 'अज्ञात त्रुटि'), 'error'); }
       })
       .withFailureHandler(function(err) {
         btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
         showToast('जमा करने में विफल: ' + err.message, 'error');
       })
       .submitForm(data);
+
   } else {
-    // no-cors: GitHub Pages → Apps Script CORS restriction bypass
-    // Request IS sent and data IS saved to Sheet; browser just can't read the response
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data)
-    })
-    .then(function() {
-      btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
-      showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
-      document.getElementById('regForm').reset();
-      document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
-      document.getElementById('centre').disabled = true;
-      document.getElementById('centreCode').value = '';
-    })
-    .catch(function() {
-      btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
-      showToast('नेटवर्क त्रुटि। इंटरनेट जांचें और पुनः प्रयास करें।', 'error');
+    // GitHub Pages → Apps Script via hidden iframe form (CORS-free)
+    var form = document.createElement('form');
+    form.method  = 'POST';
+    form.action  = SCRIPT_URL;
+    form.target  = 'gsFrame';
+    form.style.display = 'none';
+
+    Object.keys(data).forEach(function(key) {
+      var inp = document.createElement('input');
+      inp.type  = 'hidden';
+      inp.name  = key;
+      inp.value = data[key] || '';
+      form.appendChild(inp);
     });
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    // Show success after 2s (iframe loads response in background)
+    setTimeout(function() {
+      btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
+      showSuccessModal();
+    }, 2000);
   }
 });
 </script>

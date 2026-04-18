@@ -13,11 +13,17 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// ── Handle POST from GitHub Pages (CORS-compatible) ──
+// ── Handle POST (JSON body OR iframe form parameters) ──
 function doPost(e) {
   try {
-    var formData = JSON.parse(e.postData.contents);
-    var result   = submitForm(formData);
+    var formData;
+    // Try JSON body first (fetch approach)
+    try { formData = JSON.parse(e.postData.contents); } catch(x) {}
+    // Fall back to form parameters (iframe form approach)
+    if (!formData || !formData.studentName) {
+      formData = e.parameter || {};
+    }
+    var result = submitForm(formData);
     return ContentService
       .createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON);
