@@ -8,72 +8,56 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
 
-  /* Header */
   .header {
     background: #1F4E79;
     color: white;
-    padding: 16px 24px;
+    padding: 14px 24px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .header-text h1 { font-size: 18px; font-weight: 700; }
-  .header-text p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-
-  /* Progress bar */
-  .progress-bar {
-    background: #2E75B6;
-    padding: 10px 24px;
-    display: flex;
-    gap: 0;
+  .header-logo {
+    width: 48px; height: 48px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
   }
-  .step {
-    flex: 1;
-    text-align: center;
-    font-size: 11px;
-    color: rgba(255,255,255,0.6);
-    padding: 4px 0;
-    border-bottom: 3px solid transparent;
-    cursor: default;
-    transition: all 0.2s;
-  }
-  .step.active { color: #fff; border-bottom-color: #FFD700; font-weight: 700; }
-  .step.done { color: rgba(255,255,255,0.85); border-bottom-color: #90EE90; }
+  .header-text h1 { font-size: 17px; font-weight: 700; }
+  .header-text p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 
-  /* Container */
-  .container { max-width: 820px; margin: 24px auto; padding: 0 16px 40px; }
+  .container { max-width: 860px; margin: 24px auto; padding: 0 16px 48px; }
 
-  /* Card */
-  .card {
+  .section {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     margin-bottom: 20px;
+    overflow: hidden;
   }
-  .card-header {
+  .section-header {
     background: #1F4E79;
     color: white;
-    padding: 12px 20px;
-    font-size: 14px;
+    padding: 11px 18px;
+    font-size: 13px;
     font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .card-header .icon { font-size: 18px; }
-  .card-body { padding: 20px; }
+  .section-body { padding: 20px 18px; }
 
-  /* Form grid */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-  .form-grid.full { grid-template-columns: 1fr; }
-  @media (max-width: 600px) {
-    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .span-2 { grid-column: span 2; }
+
+  @media (max-width: 640px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .span-2 { grid-column: span 1; }
   }
 
-  /* Form group */
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group label {
     font-size: 12px;
@@ -82,845 +66,497 @@
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
-  .form-group label .req { color: #C00000; margin-left: 2px; }
+  .form-group label .req { color: #c0392b; margin-left: 2px; }
   .form-group input,
-  .form-group select,
-  .form-group textarea {
-    border: 1.5px solid #C8D8E8;
+  .form-group select {
+    border: 1.5px solid #cdd5df;
     border-radius: 5px;
-    padding: 9px 12px;
+    padding: 8px 10px;
     font-size: 13px;
-    font-family: Arial, sans-serif;
-    color: #333;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: #FAFCFF;
+    color: #222;
+    background: white;
+    transition: border-color 0.2s;
+    width: 100%;
   }
   .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
+  .form-group select:focus {
     outline: none;
     border-color: #2E75B6;
-    box-shadow: 0 0 0 3px rgba(46,117,182,0.15);
-    background: white;
+    box-shadow: 0 0 0 3px rgba(46,117,182,0.12);
   }
-  .form-group input.error, .form-group select.error { border-color: #C00000; }
-  .form-group .hint { font-size: 11px; color: #888; margin-top: 2px; }
+  .form-group input[readonly] {
+    background: #f5f7fa;
+    color: #555;
+    cursor: not-allowed;
+  }
+  .form-group input.error,
+  .form-group select.error { border-color: #c0392b; }
+  .err-msg { font-size: 11px; color: #c0392b; display: none; margin-top: 2px; }
 
-  /* Subject group */
-  .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
-  .subject-item { display: flex; gap: 8px; align-items: center; }
-  .subject-item label { font-size: 11px; font-weight: 700; color: #555; min-width: 70px; }
-  .subject-item select { flex: 1; font-size: 12px; padding: 7px 10px; }
-
-  /* Fee info box */
-  .fee-box {
-    background: #EBF3FB;
-    border: 1.5px solid #2E75B6;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
+  .radio-group { display: flex; gap: 20px; align-items: center; padding: 8px 0; }
+  .radio-group label {
+    font-size: 13px;
+    font-weight: normal;
+    color: #333;
+    text-transform: none;
+    letter-spacing: 0;
     display: flex;
     align-items: center;
-    gap: 12px;
-  }
-  .fee-amount { font-size: 28px; font-weight: 900; color: #1F4E79; }
-  .fee-label { font-size: 12px; color: #555; }
-
-  /* Buttons */
-  .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
-  .btn {
-    padding: 11px 28px;
-    border-radius: 6px;
-    border: none;
-    font-size: 14px;
-    font-weight: 700;
+    gap: 6px;
     cursor: pointer;
-    transition: all 0.2s;
   }
-  .btn-primary { background: #1F4E79; color: white; }
-  .btn-primary:hover { background: #16395a; }
-  .btn-secondary { background: #e0e0e0; color: #333; }
-  .btn-secondary:hover { background: #c8c8c8; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .radio-group input[type="radio"] { width: 15px; height: 15px; cursor: pointer; }
 
-  /* Section nav (shown/hidden) */
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* Success screen */
-  .success-card {
-    text-align: center;
-    padding: 48px 24px;
+  .submit-wrap { text-align: center; margin-top: 8px; }
+  .btn-submit {
+    background: #1F4E79;
+    color: white;
+    border: none;
+    padding: 13px 52px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.1s;
   }
-  .success-icon { font-size: 64px; margin-bottom: 16px; }
-  .success-title { font-size: 24px; font-weight: 700; color: #1F4E79; margin-bottom: 8px; }
-  .reg-no-box {
-    display: inline-block;
-    background: #EBF3FB;
-    border: 2px solid #2E75B6;
-    border-radius: 8px;
-    padding: 12px 32px;
-    font-size: 22px;
-    font-weight: 900;
-    color: #1F4E79;
-    letter-spacing: 1px;
-    margin: 16px 0;
-  }
-  .success-note { font-size: 13px; color: #666; max-width: 400px; margin: 0 auto; }
+  .btn-submit:hover  { background: #2E75B6; }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
 
-  /* Loader */
-  .loader {
+  /* Toast */
+  #toast {
     display: none;
-    text-align: center;
-    padding: 16px;
-    color: #2E75B6;
-    font-size: 13px;
+    position: fixed; top: 20px; right: 20px; z-index: 9999;
+    padding: 14px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    max-width: 340px;
   }
-  .loader.active { display: block; }
-
-  /* Alert */
-  .alert { border-radius: 6px; padding: 10px 16px; font-size: 13px; margin-bottom: 16px; display: none; }
-  .alert.error { background: #FFE8E8; border: 1px solid #C00000; color: #C00000; display: block; }
-  .alert.info { background: #EBF3FB; border: 1px solid #2E75B6; color: #1F4E79; display: block; }
-
-  /* Divider */
-  hr { border: none; border-top: 1px solid #E8EEF5; margin: 16px 0; }
-
-  /* Readonly field */
-  .field-readonly {
-    background: #f0f4f8 !important;
-    color: #555 !important;
-    cursor: default !important;
-  }
+  #toast.success { background: #27ae60; color: white; }
+  #toast.error   { background: #c0392b; color: white; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
-  <div>
-    <div style="font-size:32px;">📚</div>
-  </div>
+  <div class="header-logo">🎓</div>
   <div class="header-text">
-    <h1>Patrachar Shiksha Sansthan, Uttar Pradesh</h1>
-    <p>Student Registration Form — Intermediate Examination 2026</p>
+    <h1>Patrachar Shiksha Sansthan — UP</h1>
+    <p>Student Registration Form | UP Madhyamik Shiksha Vibhag</p>
   </div>
-</div>
-
-<!-- Progress -->
-<div class="progress-bar">
-  <div class="step active" id="step1">1. Centre & Class</div>
-  <div class="step" id="step2">2. Personal Details</div>
-  <div class="step" id="step3">3. Address</div>
-  <div class="step" id="step4">4. Subjects</div>
-  <div class="step" id="step5">5. Fee & Submit</div>
 </div>
 
 <div class="container">
+  <form id="regForm" novalidate>
 
-  <!-- SECTION 1: Centre & Class -->
-  <div class="section active" id="sec1">
-    <div class="card">
-      <div class="card-header"><span class="icon">🏫</span> Registration Centre & Class Details</div>
-      <div class="card-body">
-        <div id="alert1" class="alert"></div>
-        <div class="form-grid">
+    <!-- SECTION 1: Centre Details -->
+    <div class="section">
+      <div class="section-header">🏫 Centre Details</div>
+      <div class="section-body">
+        <div class="grid-2">
           <div class="form-group">
             <label>District <span class="req">*</span></label>
-            <select id="district" onchange="loadCentres()">
+            <select id="district" required>
               <option value="">-- Select District --</option>
             </select>
+            <span class="err-msg" id="err-district">Please select a district.</span>
           </div>
           <div class="form-group">
             <label>Registration Centre <span class="req">*</span></label>
-            <select id="centre" onchange="setCentreCode()">
+            <select id="centre" required disabled>
               <option value="">-- Select Centre --</option>
             </select>
+            <span class="err-msg" id="err-centre">Please select a centre.</span>
           </div>
           <div class="form-group">
             <label>Centre Code</label>
-            <input type="text" id="centreCode" readonly class="field-readonly" placeholder="Auto-filled">
+            <input type="text" id="centreCode" readonly placeholder="Auto-filled">
           </div>
           <div class="form-group">
             <label>Class <span class="req">*</span></label>
-            <select id="classYear" onchange="updateFee()">
+            <select id="classYear" required>
               <option value="">-- Select Class --</option>
-              <option value="Class 11 (Two Year)">Class 11 — Two Year Programme</option>
-              <option value="Class 12 (One Year)">Class 12 — One Year Programme</option>
+              <option value="Class 11">Class 11 (Two Year)</option>
+              <option value="Class 12">Class 12 (One Year)</option>
             </select>
+            <span class="err-msg" id="err-classYear">Please select class.</span>
           </div>
           <div class="form-group">
             <label>Stream <span class="req">*</span></label>
-            <select id="stream" onchange="loadSubjects(); updateFee();">
+            <select id="stream" required>
               <option value="">-- Select Stream --</option>
-              <option value="Humanities">Humanities (Manviki)</option>
-              <option value="Science">Science (Vigyan)</option>
-              <option value="Commerce">Commerce (Vanijya)</option>
+              <option value="Humanities">Humanities (कला)</option>
+              <option value="Science">Science (विज्ञान)</option>
+              <option value="Commerce">Commerce (वाणिज्य)</option>
             </select>
+            <span class="err-msg" id="err-stream">Please select stream.</span>
           </div>
           <div class="form-group">
             <label>Category <span class="req">*</span></label>
-            <select id="category" onchange="updateFee()">
+            <select id="category" required>
               <option value="">-- Select Category --</option>
-              <option value="General">General</option>
-              <option value="OBC">OBC</option>
-              <option value="SC/ST">SC / ST</option>
+              <option value="General">General (सामान्य)</option>
+              <option value="OBC">OBC (अन्य पिछड़ा वर्ग)</option>
+              <option value="SC">SC (अनुसूचित जाति)</option>
+              <option value="ST">ST (अनुसूचित जनजाति)</option>
             </select>
+            <span class="err-msg" id="err-category">Please select category.</span>
           </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="nextSection(1)">Next →</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- SECTION 2: Personal Details -->
-  <div class="section" id="sec2">
-    <div class="card">
-      <div class="card-header"><span class="icon">👤</span> Personal Details</div>
-      <div class="card-body">
-        <div id="alert2" class="alert"></div>
-        <div class="form-grid three">
-          <div class="form-group">
-            <label>Student's First Name <span class="req">*</span></label>
-            <input type="text" id="firstName" placeholder="First name">
+    <!-- SECTION 2: Personal Details -->
+    <div class="section">
+      <div class="section-header">👤 Personal Details</div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="form-group span-2">
+            <label>Student's Name <span class="req">*</span></label>
+            <input type="text" id="studentName" placeholder="Full name as per documents" required>
+            <span class="err-msg" id="err-studentName">Please enter student name.</span>
           </div>
-          <div class="form-group">
-            <label>Middle Name</label>
-            <input type="text" id="middleName" placeholder="Middle name (optional)">
-          </div>
-          <div class="form-group">
-            <label>Last Name <span class="req">*</span></label>
-            <input type="text" id="lastName" placeholder="Last name / Surname">
-          </div>
-        </div>
-        <div class="form-grid">
           <div class="form-group">
             <label>Father's Name <span class="req">*</span></label>
-            <input type="text" id="fatherName" placeholder="Father's full name">
+            <input type="text" id="fatherName" placeholder="Father's full name" required>
+            <span class="err-msg" id="err-fatherName">Please enter father's name.</span>
           </div>
           <div class="form-group">
             <label>Mother's Name <span class="req">*</span></label>
-            <input type="text" id="motherName" placeholder="Mother's full name">
+            <input type="text" id="motherName" placeholder="Mother's full name" required>
+            <span class="err-msg" id="err-motherName">Please enter mother's name.</span>
           </div>
           <div class="form-group">
             <label>Date of Birth <span class="req">*</span></label>
-            <input type="date" id="dob" max="2010-12-31" min="1990-01-01">
+            <input type="date" id="dob" required max="">
+            <span class="err-msg" id="err-dob">Please enter date of birth.</span>
           </div>
           <div class="form-group">
             <label>Gender <span class="req">*</span></label>
-            <select id="gender">
-              <option value="">-- Select --</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
+            <div class="radio-group" id="genderGroup">
+              <label><input type="radio" name="gender" value="Male"> Male</label>
+              <label><input type="radio" name="gender" value="Female"> Female</label>
+              <label><input type="radio" name="gender" value="Other"> Other</label>
+            </div>
+            <span class="err-msg" id="err-gender">Please select gender.</span>
           </div>
           <div class="form-group">
             <label>Aadhaar Number <span class="req">*</span></label>
-            <input type="text" id="aadhaar" placeholder="1234 5678 9012" maxlength="14" oninput="formatAadhaar(this)">
-            <span class="hint">12-digit Aadhaar number</span>
+            <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number" maxlength="12" inputmode="numeric" required>
+            <span class="err-msg" id="err-aadhaar">Enter valid 12-digit Aadhaar number.</span>
           </div>
           <div class="form-group">
             <label>Mobile Number <span class="req">*</span></label>
-            <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10">
+            <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" required>
+            <span class="err-msg" id="err-mobile">Enter valid 10-digit mobile number.</span>
           </div>
         </div>
-        <hr>
-        <div style="font-size:13px; font-weight:700; color:#1F4E79; margin-bottom:12px;">Previous Qualification</div>
-        <div class="form-grid three">
+      </div>
+    </div>
+
+    <!-- SECTION 3: Previous Qualification -->
+    <div class="section">
+      <div class="section-header">📋 Previous Qualification</div>
+      <div class="section-body">
+        <div class="grid-3">
           <div class="form-group">
-            <label>Previous Exam Passed <span class="req">*</span></label>
-            <select id="prevExam">
-              <option value="">-- Select --</option>
+            <label>Exam Passed <span class="req">*</span></label>
+            <select id="prevExam" required>
+              <option value="">-- Select Exam --</option>
               <option value="High School (Class 10)">High School (Class 10)</option>
-              <option value="Intermediate (Class 11)">Intermediate (Class 11)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Year of Passing <span class="req">*</span></label>
-            <input type="number" id="prevYear" placeholder="e.g. 2023" min="2000" max="2026">
-          </div>
-          <div class="form-group">
-            <label>Board Name <span class="req">*</span></label>
-            <select id="prevBoard">
-              <option value="">-- Select Board --</option>
-              <option value="UP Board (UPMSP)">UP Board (UPMSP)</option>
-              <option value="CBSE">CBSE</option>
-              <option value="ICSE">ICSE</option>
-              <option value="NIOS">NIOS</option>
-              <option value="Bihar Board">Bihar Board</option>
-              <option value="MP Board">MP Board</option>
+              <option value="Intermediate (Class 12)">Intermediate (Class 12)</option>
               <option value="Other">Other</option>
             </select>
+            <span class="err-msg" id="err-prevExam">Please select previous exam.</span>
           </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="prevSection(2)">← Back</button>
-          <button class="btn btn-primary" onclick="nextSection(2)">Next →</button>
+          <div class="form-group">
+            <label>Passing Year <span class="req">*</span></label>
+            <input type="number" id="prevYear" placeholder="e.g. 2023" min="1980" max="2026" required>
+            <span class="err-msg" id="err-prevYear">Enter valid passing year.</span>
+          </div>
+          <div class="form-group">
+            <label>Board <span class="req">*</span></label>
+            <input type="text" id="prevBoard" placeholder="e.g. UP Board, CBSE" required>
+            <span class="err-msg" id="err-prevBoard">Please enter board name.</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- SECTION 3: Address -->
-  <div class="section" id="sec3">
-    <div class="card">
-      <div class="card-header"><span class="icon">🏠</span> Address Details</div>
-      <div class="card-body">
-        <div id="alert3" class="alert"></div>
-        <div class="form-grid">
+    <!-- SECTION 4: Fees -->
+    <div class="section">
+      <div class="section-header">💰 Fees Details</div>
+      <div class="section-body">
+        <div class="grid-2">
           <div class="form-group">
-            <label>House No. / Mohalla / Street <span class="req">*</span></label>
-            <input type="text" id="address" placeholder="House no., street, locality">
+            <label>Fees Submitted (₹) <span class="req">*</span></label>
+            <input type="number" id="feesSubmitted" placeholder="Amount in rupees" min="0" required>
+            <span class="err-msg" id="err-feesSubmitted">Please enter fees amount.</span>
           </div>
-          <div class="form-group">
-            <label>Village / Town <span class="req">*</span></label>
-            <input type="text" id="village" placeholder="Village or town name">
-          </div>
-          <div class="form-group">
-            <label>Post Office <span class="req">*</span></label>
-            <input type="text" id="post" placeholder="Post office name">
-          </div>
-          <div class="form-group">
-            <label>District (Residence) <span class="req">*</span></label>
-            <input type="text" id="resDistrict" placeholder="District of residence">
-          </div>
-          <div class="form-group">
-            <label>Pin Code <span class="req">*</span></label>
-            <input type="text" id="pinCode" placeholder="6-digit PIN code" maxlength="6">
-          </div>
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" id="state" value="Uttar Pradesh" class="field-readonly" readonly>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="prevSection(3)">← Back</button>
-          <button class="btn btn-primary" onclick="nextSection(3)">Next →</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- SECTION 4: Subjects -->
-  <div class="section" id="sec4">
-    <div class="card">
-      <div class="card-header"><span class="icon">📖</span> Subject Selection</div>
-      <div class="card-body">
-        <div id="alert4" class="alert"></div>
-        <div id="subjectInfo" style="background:#EBF3FB; border:1px solid #2E75B6; border-radius:6px; padding:10px 14px; font-size:12px; color:#1F4E79; margin-bottom:16px;"></div>
-        <div id="compulsorySection">
-          <div style="font-size:12px; font-weight:700; color:#375623; margin-bottom:8px; text-transform:uppercase;">Compulsory Subjects (Auto-assigned)</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Compulsory Subject 1</label>
-              <input type="text" id="subComp1" value="Hindi / General Hindi (101/102)" readonly class="field-readonly">
-            </div>
-            <div class="form-group">
-              <label>Compulsory Subject 2</label>
-              <input type="text" id="subComp2" value="Moral, Yoga, Game & Physical Education (110)" readonly class="field-readonly">
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div id="electiveSection">
-          <div id="electiveLabel" style="font-size:12px; font-weight:700; color:#C55A11; margin-bottom:8px; text-transform:uppercase;">Elective Subjects</div>
-          <div id="subjectSelectors" class="subject-grid"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="prevSection(4)">← Back</button>
-          <button class="btn btn-primary" onclick="nextSection(4)">Next →</button>
-        </div>
-      </div>
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit" id="submitBtn">Submit Registration</button>
     </div>
-  </div>
 
-  <!-- SECTION 5: Fee & Submit -->
-  <div class="section" id="sec5">
-    <div class="card">
-      <div class="card-header"><span class="icon">💰</span> Fee Details & Submission</div>
-      <div class="card-body">
-        <div id="alert5" class="alert"></div>
+  </form>
+</div>
 
-        <!-- Fee display -->
-        <div class="fee-box">
-          <div>
-            <div class="fee-label">Total Correspondence Fee Payable</div>
-            <div class="fee-amount" id="feeDisplay">₹ —</div>
-            <div class="fee-label" id="feeBreakdown"></div>
-          </div>
-        </div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Treasury Challan Number <span class="req">*</span></label>
-            <input type="text" id="challanNo" placeholder="Challan number">
-          </div>
-          <div class="form-group">
-            <label>Challan Date <span class="req">*</span></label>
-            <input type="date" id="challanDate">
-          </div>
-          <div class="form-group">
-            <label>Bank / Treasury Name <span class="req">*</span></label>
-            <input type="text" id="bankName" placeholder="Bank or Treasury name">
-          </div>
-          <div class="form-group">
-            <label>Amount Deposited (₹) <span class="req">*</span></label>
-            <input type="number" id="feeAmount" placeholder="Amount in rupees">
-          </div>
-        </div>
-
-        <hr>
-        <!-- Review summary -->
-        <div style="font-size:13px; font-weight:700; color:#1F4E79; margin-bottom:10px;">📋 Registration Summary</div>
-        <div id="reviewSummary" style="background:#F7FBFF; border:1px solid #C8D8E8; border-radius:6px; padding:14px; font-size:12px; line-height:2;"></div>
-
-        <hr>
-        <div style="font-size:12px; color:#666; margin-bottom:16px;">
-          ✅ By submitting this form, I confirm that all information provided is correct and complete.
-          I understand that false information may lead to cancellation of registration.
-        </div>
-
-        <div class="loader" id="loader">⏳ Submitting... Please wait...</div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="prevSection(5)">← Back</button>
-          <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">✔ Submit Registration</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUCCESS -->
-  <div class="section" id="secSuccess">
-    <div class="card">
-      <div class="success-card">
-        <div class="success-icon">✅</div>
-        <div class="success-title">Registration Successful!</div>
-        <p style="color:#555; margin-bottom:12px; font-size:13px;">Your Registration Number is:</p>
-        <div class="reg-no-box" id="regNoDisplay">—</div>
-        <p class="success-note">Please note this registration number for future reference. It will be required for exam form submission and admit card download.</p>
-        <br>
-        <button class="btn btn-secondary" onclick="newRegistration()">Register Another Student</button>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /container -->
+<div id="toast"></div>
 
 <script>
-// ── Subject data ──
-var SUBJECTS = {
-  Humanities: [
-    {code:'103', name:'Sanskrit'}, {code:'104', name:'Urdu'}, {code:'117', name:'English'},
-    {code:'128', name:'History'}, {code:'130', name:'Civics'}, {code:'136', name:'Economics'},
-    {code:'138', name:'Music Vocal'}, {code:'139', name:'Music Instrumental'},
-    {code:'140', name:'Drawing & Design'}, {code:'141', name:'Fine Arts'}, {code:'149', name:'Applied Arts'},
-    {code:'142', name:'Sociology'}, {code:'135', name:'Home Science'}, {code:'129', name:'Geography'},
-    {code:'133', name:'Psychology'}, {code:'134', name:'Education'},
-    {code:'145', name:'Wood Craft'}, {code:'146', name:'Book Craft'}, {code:'147', name:'Stitching'}
-  ],
-  Science: [
-    {code:'151', name:'Physics'}, {code:'152', name:'Chemistry'},
-    {code:'153', name:'Biology'}, {code:'131', name:'Mathematics'},
-    {code:'103', name:'Sanskrit'}, {code:'117', name:'English'}, {code:'128', name:'History'},
-    {code:'130', name:'Civics'}, {code:'136', name:'Economics'}, {code:'129', name:'Geography'}
-  ],
-  Commerce: [
-    {code:'136', name:'Economics'}, {code:'117', name:'English'}, {code:'131', name:'Mathematics'},
-    {code:'103', name:'Sanskrit'}, {code:'104', name:'Urdu'}, {code:'128', name:'History'},
-    {code:'130', name:'Civics'}, {code:'142', name:'Sociology'}, {code:'135', name:'Home Science'},
-    {code:'129', name:'Geography'}, {code:'133', name:'Psychology'}
-  ]
-};
-
-var FEE_TABLE = {
-  'Class 11 (Two Year)': { Humanities: {General:420, OBC:420, 'SC/ST':270}, Science: {General:520, OBC:520, 'SC/ST':370}, Commerce: {General:420, OBC:420, 'SC/ST':270} },
-  'Class 12 (One Year)': { Humanities: {General:800, OBC:800, 'SC/ST':500}, Science: {General:1000, OBC:1000, 'SC/ST':700}, Commerce: {General:800, OBC:800, 'SC/ST':500} }
-};
-
-var currentSection = 1;
-
-// ── Load districts on page load ──
-// Centres data embedded for GitHub Pages
+// ── Centre Data ──
 var CENTRES_DATA = {
-  "अमेठी (Amethi)": [{"code": 901, "name": "सुभाष पशुपतिनाथ इण्टर कालेज, तिलोई, अमेठी"}, {"code": 902, "name": "ए.एच. इण्टर कालेज, मुसाफिरखाना, अमेठी"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, अमेठी, अमेठी"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, गौरीगंज, अमेठी"}, {"code": 953, "name": "राजकीय बालिका इं0 का0, मुसाफिरखाना, अमेठी"}],
-  "अम्बेडकर नगर (Ambedkar Nagar)": [{"code": 901, "name": "बी.एन. इन्टर कालेज, अकबरपुर, अम्बेडकर नगर"}, {"code": 902, "name": "होबर त्रिलोकनाथ इन्टर कालेज, टांडा, अम्बेडकर नगर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, अकबरपुर, अम्बेडकर नगर"}],
-  "अयोध्या (Ayodhya)": [{"code": 901, "name": "राजकीय इन्टर कालेज, अयोध्या"}, {"code": 902, "name": "भारती इन्टर कालेज, बीकापुर, अयोध्या"}, {"code": 903, "name": "डा0 बद्री प्रसाद पाण्डेय स्मारक सर्वोदय इन्टर कालेज, रामगंज, अयोध्या"}, {"code": 904, "name": "हिन्दु इण्टर कालेज, रुदौली, अयोध्या"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, अयोध्या"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, रुदौली, अयोध्या"}],
-  "अलीगढ़ (Aligarh)": [{"code": 901, "name": "नारसिंगी लाल राजकीय इण्टर कालेज, अलीगढ़"}, {"code": 902, "name": "के.एम.बी. इण्टर कालेज, अतरौली, अलीगढ़"}, {"code": 903, "name": "खैर इण्टर कालेज, खैर, अलीगढ़"}, {"code": 904, "name": "लक्ष्मी राज इण्टर कालेज, गभाना, अलीगढ़"}, {"code": 905, "name": "एस.डी. सिंह इण्टर कालेज, इगलास, अलीगढ़"}, {"code": 951, "name": "उदयसिंह कन्या इण्टर कालेज, अलीगढ़"}],
-  "आगरा (Agra)": [{"code": 901, "name": "राजकीय इन्टर कालेज, आगरा"}, {"code": 902, "name": "गांधी स्मारक किसान इण्टर कालेज, किरावली, आगरा"}, {"code": 903, "name": "बजाज राष्ट्रीय इण्टर कालेज, फतेहपुर सीकरी, आगरा"}, {"code": 904, "name": "जनता इण्टर कालेज, खेरागढ़, आगरा"}, {"code": 905, "name": "जनता इण्टर कालेज, एतमादपुर, आगरा"}, {"code": 906, "name": "जनता इण्टर कालेज, फतेहाबाद, आगरा"}, {"code": 907, "name": "भदावर इण्टर कालेज, बाह, आगरा"}, {"code": 951, "name": "केदारनाथ सेक्सरिया बालिका इण्टर कालेज, बेलनगंज, आगरा"}],
-  "आजमगढ़ (Azamgarh)": [{"code": 901, "name": "शिवली नेशनल इन्टर कालेज, आजमगढ़"}, {"code": 902, "name": "उद्योग विद्यालय इन्टर कालेज, कोयलसा, आजमगढ़"}, {"code": 903, "name": "इन्टर कालेज, कप्तानगंज, आजमगढ़"}, {"code": 904, "name": "एस0 के0 जी0 एन0 इन्टर कालेज, लालगंज, आजमगढ़"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, आजमगढ़"}],
-  "इटावा (Etawah)": [{"code": 901, "name": "राजकीय इन्टर कालेज, इटावा"}, {"code": 902, "name": "जनसहयोगी इन्टर कालेज, मोढ़ी, इटावा"}, {"code": 903, "name": "श्री अमिताभ बच्चन राजकीय इन्टर कालेज, सैफई, इटावा"}, {"code": 904, "name": "हिन्दू विद्यालय इन्टर कालेज, जसवन्तनगर, इटावा"}, {"code": 905, "name": "जवाहर इन्टर कालेज, चकरनगर, इटावा"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, इटावा"}],
-  "उन्नाव (Unnao)": [{"code": 901, "name": "राजकीय इन्टर कालेज, उन्नाव"}, {"code": 902, "name": "महात्मा गांधी इन्टर कालेज, सफीपुर, उन्नाव"}, {"code": 903, "name": "भारतीय आदर्श एंग्लो-संस्कृत इन्टर कालेज, पुरवा, उन्नाव"}, {"code": 904, "name": "गांधी मिशन एच.एम.के.डी. इन्टर कालेज, मोहान, उन्नाव"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, उन्नाव"}, {"code": 952, "name": "महात्मा गांधी बालिका इन्टर कालेज, सफीपुर, उन्नाव"}, {"code": 953, "name": "राजकीय बालिका इन्टर कालेज, नवाबगंज, उन्नाव"}, {"code": 954, "name": "पार्वती बालिका इन्टर कालेज, बींघापुर, उन्नाव"}],
-  "एटा (Etah)": [{"code": 901, "name": "राजकीय इण्टर कालेज, एटा"}, {"code": 902, "name": "डी.ए.वी. इण्टर कालेज, अलीगंज, एटा"}, {"code": 903, "name": "एम.जी. इण्टर कालेज, जलेसर, एटा"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, एटा"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, जलेसर, एटा"}],
-  "औरैया (Auraiya)": [{"code": 901, "name": "वैदिक टेक्निकल इन्टर कालेज, दिबियापुर औरैया"}, {"code": 902, "name": "पब्लिक इन्टर कालेज, बिधूना, औरैया"}, {"code": 903, "name": "श्री जनता इन्टर कालेज, अजीतमल, औरैया"}, {"code": 904, "name": "नगर पालिका इन्टर कालेज, औरैया"}],
-  "कन्नौज (Kannauj)": [{"code": 901, "name": "के.के. इन्टर कालेज, कन्नौज"}, {"code": 902, "name": "हीरा लाल बी.एन. इन्टर कालेज, छिबरामऊ, कन्नौज"}, {"code": 903, "name": "दुर्गा नारायण इन्टर कालेज, तिर्वा, कन्नौज"}, {"code": 951, "name": "जे.पी. गल्र्स इन्टर कालेज, कन्नौज"}, {"code": 952, "name": "छिबरामऊ गल्र्स इन्टर कालेज, छिबरामऊ, कन्नौज"}, {"code": 953, "name": "इन्द्रादेवी गल्र्स इन्टर कालेज, तिर्वा, कन्नौज"}],
-  "कानपुर देहात (रमाबाई नगर) (Kanpur Dehat - Ramabai Nagar)": [{"code": 901, "name": "अकबरपुर इण्टर कालेज, अकबरपुर, (रमाबाई नगर) कानपुर देहात"}, {"code": 902, "name": "बी.एम.एस. इण्टर कालेज, कठेठी, (रमाबाई नगर) कानपुर देहात"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, पुखरायां, (रमाबाई नगर) कानपुर देहात"}],
-  "कानपुर नगर (Kanpur Nagar)": [{"code": 901, "name": "राजकीय इन्टर कालेज, कानपुर"}, {"code": 902, "name": "बिल्हौर इन्टर कालेज, बिल्हौर कानपुर"}, {"code": 903, "name": "गांधी विद्यापीठ इन्टर कालेज, घाटमपुर, कानपुर"}, {"code": 951, "name": "पूर्णा देवी खन्ना बालिका इण्टर कालेज, कानपुर"}],
-  "कासगंज (Kasganj)": [{"code": 901, "name": "आजाद गांधी इं. कालेज, कासगंज, कासगंज"}, {"code": 902, "name": "श्री भागवत राष्ट्रीय इण्टर कालेज, पटियाली, कासगंज"}, {"code": 951, "name": "राजकीय बालिका इं. कालेज, कासगंज, कासगंज"}],
-  "कुशीनगर (Kushinagar)": [{"code": 901, "name": "गोस्वामी तुलसीदास इन्टर कालेज, पडरौना, कुशीनगर"}, {"code": 902, "name": "एफ0 एम0 इन्टर कालेज, तमकुही राज, कुशीनगर"}],
-  "कौशाम्बी (Kaushambi)": [{"code": 901, "name": "दुर्गादेवी इन्टर कालेज, आोसा मंझनपुर, कौशाम्बी"}, {"code": 902, "name": "एस.ए.वी. इन्टर कालेज, सैनी, कौशाम्बी"}, {"code": 903, "name": "श्री मान सिंह इन्टर कालेज, अलीपुर जीता, कौशाम्बी"}, {"code": 904, "name": "हुबलाल इन्टर कालेज, भरवारी, कौशाम्बी"}, {"code": 905, "name": "जवाहर लाल नेहरू इन्टर कालेज, सरसांवा, कौशाम्बी"}],
-  "खीरी (Kheri)": [{"code": 901, "name": "राजकीय इन्टर कालेज, लखीमपुर खीरी"}, {"code": 902, "name": "जे.पी. इन्टर कालेज, मोहम्मदी, खीरी"}, {"code": 903, "name": "जिला पंचायत इन्टर कालेज, निधासन, खीरी"}, {"code": 904, "name": "बी.बी.एल.सी. इन्टर कालेज, खमरिया, खीरी"}, {"code": 905, "name": "पब्लिक इन्टर कालेज, गोला गोकर्णनाथ, खीरी"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, लखीमपुर, खीरी"}],
-  "गाजियाबाद (Ghaziabad)": [{"code": 901, "name": "राजकीय इण्टर कालेज, नन्दग्राम, गाजियाबाद"}, {"code": 902, "name": "पी.बी.ए.एस. इण्टर कालेज, मोदीनगर, गाजियाबाद"}, {"code": 951, "name": "राजकीय कन्या इण्टर कालेज, विजयनगर, गाजियाबाद"}],
-  "गाजीपुर (Ghazipur)": [{"code": 901, "name": "राजकीय सिटी इन्टर कालेज, गाजीपुर"}, {"code": 902, "name": "टाउन नेशनल इन्टर कालेज, सैदपुर, गाजीपुर"}, {"code": 903, "name": "श्री मोतीलाल नेहरू इन्टर कालेज, बासपुर, गाजीपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, गाजीपुर"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, जमानिया, गाजीपुर"}, {"code": 953, "name": "राजकीय बालिका इन्टर कालेज, सैदपुर, गाजीपुर"}, {"code": 954, "name": "राजकीय बालिका इन्टर कालेज, मोहम्मदाबाद, गाजीपुर"}],
-  "गोण्डा (Gonda)": [{"code": 901, "name": "फखरुद्दीन अली अहमद राजकीय इन्टर कालेज, गोण्डा"}, {"code": 902, "name": "कन्हैया लाल इन्टर कालेज, कर्नलगंज, गोण्डा"}, {"code": 903, "name": "एम.डी.बी.एस. इन्टर कालेज, बलरामपुर, गोण्डा"}, {"code": 904, "name": "ए.पी. इन्टर कालेज, मनकापुर, गोण्डा"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, गोण्डा"}],
-  "गोरखपुर (Gorakhpur)": [{"code": 901, "name": "राजकीय जुबली इन्टर कालेज, गोरखपुर"}, {"code": 902, "name": "गांधी इन्टर कालेज, महुआपर बड़हलगंज, गोरखपुर"}, {"code": 903, "name": "एस0 के0 इन्टर कालेज, कौड़ीराम, गोरखपुर"}, {"code": 904, "name": "जे0 पी0 इन्टर कालेज, कैम्पियरगंज, गोरखपुर"}, {"code": 905, "name": "भोला राम मस्करा इन्टर कालेज, सहजनवां, गोरखपुर"}, {"code": 906, "name": "श्री गणेश पाण्डेय इन्टर कालेज, कटघर खजनी, गोरखपुर"}, {"code": 951, "name": "ए0 डी0 राजकीय बालिका इन्टर कालेज, गोरखपुर"}],
-  "गौतमबुद्ध नगर (Gautam Buddha Nagar)": [{"code": 901, "name": "मिहिरभोज इण्टर कालेज, दादरी, गौतमबुद्धनगर"}],
-  "चन्दौली (Chandauli)": [{"code": 901, "name": "महेन्द्र टेक्निकल इन्टर कालेज, चन्दौली"}, {"code": 902, "name": "आ0 ना0 रा0 इन्टर कालेज, चकिया, चन्दौली"}, {"code": 951, "name": "जिला परिषद् क0 इन्टर कालेज, चन्दौली"}, {"code": 952, "name": "जिला पंचायत क0 इन्टर कालेज, चकिया, चन्दौली"}],
-  "चित्रकूट (Chitrakoot)": [{"code": 901, "name": "सेठ राधाकृष्ण पोद्दार इन्टर कालेज, चित्रकूट धाम"}, {"code": 902, "name": "चित्रकूट इन्टर कालेज, कर्वी, चित्रकूट धाम"}, {"code": 903, "name": "रतन नाथ इन्टर कालेज, रसिन, चित्रकूट धाम"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, कर्वी, चित्रकूट धाम"}],
-  "जालौन (Jalaun)": [{"code": 901, "name": "राजकीय इन्टर कालेज, उरई, जालौन"}, {"code": 902, "name": "छत्रसाल इन्टर कालेज, जालौन"}, {"code": 903, "name": "एम.एस.वी. इन्टर कालेज, कालपी, जालौन"}, {"code": 904, "name": "राजकीय इन्टर कालेज, बंगरा, जालौन"}, {"code": 905, "name": "राजकीय इन्टर कालेज, कदौरा, जालौन"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, उरई, जालौन"}, {"code": 952, "name": "बालिका इन्टर कालेज, जालौन"}, {"code": 953, "name": "आर्य कन्या इन्टर कालेज, कालपी, जालौन"}],
-  "जौनपुर (Jaunpur)": [{"code": 901, "name": "टी0 डी0 इन्टर कालेज, जौनपुर"}, {"code": 902, "name": "एस0 बी0 इन्टर कालेज, बदलापुर, जौनपुर"}, {"code": 903, "name": "सेन्ट थामस इन्टर कालेज, शाहगंज, जौनपुर"}, {"code": 904, "name": "सार्वजनिक इन्टर कालेज, मुंगराबादशाहपुर, जौनपुर"}, {"code": 905, "name": "बी0 एन0 बी0 इन्टर कालेज, मडियाहूं, जौनपुर"}, {"code": 906, "name": "तेज बहादुर सिंह इन्टर कालेज, निगोह, जौनपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, जौनपुर"}],
-  "ज्योतिबाराव फूलेनगर (अमरोहा) (Jyotiba Phule Nagar - Amroha)": [{"code": 901, "name": "राजकीय इन्टर कालेज, जे.पी.नगर"}, {"code": 902, "name": "गांधी विद्यालय इन्टर कालेज, धनौरा, जे.पी.नगर"}, {"code": 903, "name": "श्रीमती सुखदेवी इन्टर कालेज, हसनपुर, जे.पी.नगर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, अमरोहा, जे.पी.नगर"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, हसनपुर, जे.पी.नगर"}, {"code": 953, "name": "राजकीय बालिका इन्टर कालेज, बछरायूं, जे.पी.नगर"}],
-  "झांसी (Jhansi)": [{"code": 901, "name": "राजकीय इन्टर कालेज, झांसी"}, {"code": 902, "name": "आदर्श इन्दर कालेज, मोंठ, झांसी"}, {"code": 903, "name": "राजकीय इन्टर कालेज, समथर, झांसी"}, {"code": 904, "name": "खैर इन्टर कालेज, गुरसरांव, झांसी"}, {"code": 905, "name": "एल.डी. दमेले इन्टर कालेज, मऊ रानीपुर, झांसी"}, {"code": 951, "name": "सूरज प्रसाद राजकीय बालिका इन्टर कालेज, झांसी"}],
-  "देवरिया (Deoria)": [{"code": 901, "name": "राजकीय इन्टर कालेज, देवरिया"}, {"code": 902, "name": "बापू इन्टर कालेज, सलेमपुर, देवरिया"}, {"code": 903, "name": "बी0 आर0 डी0 इन्टर कालेज, भाटपाररानी, देवरिया"}, {"code": 904, "name": "डी0 एन0 इन्टर कालेज, रुद्रपुर, देवरिया"}, {"code": 905, "name": "बब्बन सिंह इन्टर कालेज, रतसिया कोठी, देवरिया"}, {"code": 906, "name": "अभयानन्द शिक्षा संस्थान इन्टर कालेज, शिवधरिया, देवरिया"}, {"code": 907, "name": "आचार्य नरेन्द्र देव इन्टर कालेज, पथरदेवा, देवरिया"}, {"code": 951, "name": "कस्तूरबा गांधी राजकीय बालिका इन्टर कालेज, देवरिया"}],
-  "पीलीभीत (Pilibhit)": [{"code": 901, "name": "ड्रमण्ड राजकीय इन्टर कालेज, पीलीभीत"}, {"code": 902, "name": "पब्लिक इन्टर कालेज, पूरनपुर, पीलीभीत"}, {"code": 903, "name": "एस.आर.एम. इन्टर कालेज, बीसलपुर, पीलीभीत"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, पीलीभीत"}],
-  "प्रतापगढ़ (Pratapgarh)": [{"code": 901, "name": "राजकीय इन्टर कालेज, प्रतापगढ़"}, {"code": 902, "name": "एस.पी. इन्टर कालेज, कुण्डा, प्रतापगढ़"}, {"code": 903, "name": "रामराज इन्टर कालेज, पट्टी, प्रतापगढ़"}, {"code": 904, "name": "राम अंजोर इन्टर कालेज, लालगंज, प्रतापगढ़"}, {"code": 905, "name": "जगदीश नारायण इन्टर कालेज, ढिगवस, प्रतापगढ़"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, प्रतापगढ़"}],
-  "प्रयागराज (Prayagraj)": [{"code": 901, "name": "राजकीय इन्टर कालेज, प्रयागराज"}, {"code": 902, "name": "मेवालाल अयोध्या प्रसाद गुप्ता स्मारक इन्टर कालेज, सोरांव, प्रयागराज"}, {"code": 903, "name": "मदन मोहन मालवीय इन्टर कालेज, करछना, प्रयागराज"}, {"code": 904, "name": "विजय लक्ष्मी इन्टर कालेज, फूलपुर, प्रयागराज"}, {"code": 905, "name": "राजा कमलाकर इन्टर कालेज, शंकरगढ़, प्रयागराज"}, {"code": 906, "name": "गांधी इन्टर कालेज, पटेल नगर, झूंसी, प्रयागराज"}, {"code": 907, "name": "श्री राम प्रताप इन्टर कालेज, सिरसा, प्रयागराज"}, {"code": 908, "name": "बद्री नाथ तिवारी इन्टर कालेज, मेजा रोड, प्रयागराज"}, {"code": 909, "name": "महर्षि कृष्ण इन्टर कालेज, हंडिया, प्रयागराज"}, {"code": 910, "name": "सरदार पटेल इन्टर कालेज, सिकरों कोरांव, प्रयागराज"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, प्रयागराज"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, फूलपुर, प्रयागराज"}],
-  "फतेहपुर (Fatehpur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, फतेहपुर"}, {"code": 902, "name": "दयानन्द इन्टर कालेज, बिन्दकी, फतेहपुर"}, {"code": 903, "name": "इन्टर कालेज, बुदवन, फतेहपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, फतेहपुर"}, {"code": 952, "name": "सोहन लाल द्विवेदी राजकीय बालिका इन्टर कालेज, बिन्दकी, फतेहपुर"}],
-  "फर्रुखाबाद (Farrukhabad)": [{"code": 901, "name": "राजकीय इन्टर कालेज फतेहगढ़, फर्रुखाबाद"}, {"code": 902, "name": "एस.एन. इन्टर कालेज, कायमगंज, फर्रुखाबाद"}, {"code": 903, "name": "दयानन्द इन्टर कालेज, अमृतपुर, फर्रुखाबाद"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, फतेहगढ़, फर्रुखाबाद"}, {"code": 952, "name": "कन्या विद्यापीठ इन्टर कालेज, कायमगंज, फर्रुखाबाद"}],
-  "फिरोजाबाद (Firozabad)": [{"code": 901, "name": "पी.डी. जैन इण्टर कालेज, फिरोजाबाद"}, {"code": 902, "name": "लोक राष्ट्रीय इण्टर कालेज, जसराना, फिरोजाबाद"}, {"code": 951, "name": "महात्मा गांधी कन्या इण्टर कालेज, फिरोजाबाद"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, टूण्डला, फिरोजाबाद"}, {"code": 953, "name": "बी.डी.एम. कन्या इण्टर कालेज, शिकोहाबाद, फिरोजाबाद"}],
-  "बदायूं (Badaun)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बदायूं"}, {"code": 902, "name": "मदनलाल इन्टर कालेज, बिसौली, बदायूं"}, {"code": 903, "name": "प्रमोद इन्टर कालेज, सहसवान, बदायूं"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बदायूं"}],
-  "बरेली (Bareilly)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बरेली"}, {"code": 902, "name": "एम.जी.एम. इन्टर कालेज, बहेड़ी, बरेली"}, {"code": 903, "name": "जय प्रकाश नारायण इन्टर कालेज, नवाबगंज, बरेली"}, {"code": 904, "name": "श्री सुभाष इन्टर कालेज, आंवला, बरेली"}, {"code": 905, "name": "चौधरी राजेश्वर सिंह किसान इन्टर कालेज, फरीदपुर, बरेली"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बरेली"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, आंवला, बरेली"}, {"code": 953, "name": "श्यामसुन्दर कन्या इन्टर कालेज, फरीदपुर, बरेली"}],
-  "बलरामपुर (Balrampur)": [{"code": 901, "name": "मोहम्मद युसूफ उस्मानी इन्टर कालेज, उतरौला, बलरामपुर"}, {"code": 902, "name": "एम.पी.पी. इन्टर कालेज, बलरामपुर"}, {"code": 903, "name": "स्वतन्त्र भारत इन्टर कालेज, तुलसीपुर, बलरामपुर"}],
-  "बलिया (Ballia)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बलिया"}, {"code": 902, "name": "बांसडीह इन्टर कालेज, बांसडीह, बलिया"}, {"code": 903, "name": "नरहेजी इन्टर कालेज, नरही रसड़ा, बलिया"}, {"code": 904, "name": "रामनाथ पाठक इन्टरमीडिएट कालेज, मुरालपट्टी, लालगंज, बलिया"}],
-  "बस्ती (Basti)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बस्ती"}, {"code": 902, "name": "किसान इन्टर कालेज, भानपुर, बस्ती"}, {"code": 903, "name": "नेशनल इन्टर कालेज, हरैया, बस्ती"}, {"code": 951, "name": "एम.पी.क0 इन्टर कालेज, हरैया, बस्ती"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, बस्ती"}],
-  "बहराइच (Bahraich)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बहराइच"}, {"code": 902, "name": "हुकुम सिंह इन्टर कालेज, कैसरगंज, बहराइच"}, {"code": 903, "name": "श्रीराम जानकी इन्टर कालेज, रूपईडीहा, बहराइच"}, {"code": 904, "name": "राजकीय इन्टर कालेज, लखैयाकला, बहराइच"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बहराइच"}],
-  "बांदा (Banda)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बांदा"}, {"code": 902, "name": "पं. ज्वाला प्रसाद इन्टर कालेज, बबेरू, बांदा"}, {"code": 903, "name": "राजकुमार इन्टर कालेज, नरैनी, बांदा"}, {"code": 904, "name": "ब्रह्मा विज्ञान इन्टर कालेज, अतर्रा, बांदा"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बांदा"}],
-  "बागपत (Baghpat)": [{"code": 901, "name": "यमुना इण्टर कालेज, बागपत"}, {"code": 902, "name": "जनता वैदिक इण्टर कालेज, बड़ौत, बागपत"}, {"code": 903, "name": "जैन स्थानकवासी कन्या इण्टर कालेज, बड़ौत, बागपत"}, {"code": 904, "name": "आदर्श इण्टर कालेज, डौला, बागपत"}],
-  "बाराबंकी (Barabanki)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बाराबंकी"}, {"code": 902, "name": "यूनियन इन्टर कालेज, रामनगर, बाराबंकी"}, {"code": 903, "name": "सार्वजनिक विद्यालय इन्टर कालेज, हैदरगढ़, बाराबंकी"}, {"code": 904, "name": "राजकीय इन्टर कालेज, सिरौली, गौसपुर, बाराबंकी"}, {"code": 905, "name": "पटेल पंचायत इन्टर कालेज, रामसनेही घाट, बाराबंकी"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बाराबंकी"}],
-  "बिजनौर (Bijnor)": [{"code": 901, "name": "राजकीय इन्टर कालेज, बिजनौर"}, {"code": 902, "name": "राजकीय इन्टर कालेज, नजीबाबाद, बिजनौर"}, {"code": 903, "name": "एम.एम. इन्टर कालेज, नगीना, बिजनौर"}, {"code": 904, "name": "के.एम. इन्टर कालेज, धामपुर, बिजनौर"}, {"code": 905, "name": "एम.एम. इन्टर कालेज, चांदपुर, बिजनौर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, बिजनौर"}, {"code": 952, "name": "मूर्तिदेवी कन्या इन्टर कालेज, नजीबाबाद, बिजनौर"}, {"code": 953, "name": "दयानन्द वैदिक कन्या इन्टर कालेज, नगीना, बिजनौर"}, {"code": 954, "name": "कन्या इन्टर कालेज, धामपुर, बिजनौर"}, {"code": 955, "name": "वैदिक कन्या इन्टर कालेज, चांदपुर, बिजनौर"}],
-  "बुलन्दशहर (Bulandshahr)": [{"code": 901, "name": "राजकीय इण्टर कालेज, बुलन्दशहर"}, {"code": 902, "name": "एल.डी.ए.बी. इण्टर कालेज, अनूपशहर, बुलन्दशहर"}, {"code": 903, "name": "कुबेर इण्टर कालेज, डिबाई, बुलन्दशहर"}, {"code": 904, "name": "एस.एम.जे.ई.सी. इण्टर कालेज, खुर्जा, बुलन्दशहर"}, {"code": 905, "name": "अग्रसेन इण्टर कालेज, सिकन्दराबाद, बुलन्दशहर"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, बुलन्दशहर"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, भुवन बहादुरनगर, बुलन्दशहर"}, {"code": 953, "name": "एस.के.जे. कन्या इण्टर कालेज, डिबाई, बुलन्दशहर"}, {"code": 954, "name": "आर्य कन्या पाठशाला इण्टर कालेज, खुर्जा, बुलन्दशहर"}, {"code": 955, "name": "डी.डी. कबाड़ी इण्टर कालेज, सिकन्दराबाद, बुलन्दशहर"}],
-  "भदोही (सन्त रविदास नगर) (Bhadohi - Sant Ravidas Nagar)": [{"code": 901, "name": "वि0 ना0 रा0 इन्टर कालेज, ज्ञानपुर, भदोही"}, {"code": 902, "name": "इन्द्र बहादुर सिंह नेशनल इन्टर कालेज, भदोही"}, {"code": 951, "name": "जिला परिषद् क0 इन्टर कालेज, ज्ञानपुर, भदोही"}, {"code": 952, "name": "ज्ञानदेवी बालिका इन्टर कालेज, भदोही"}],
-  "मऊ (Mau)": [{"code": 901, "name": "डी0 ए0 वी0 इन्टर कालेज, मऊ"}, {"code": 902, "name": "विक्ट्री इन्टर कालेज, दोहरी घाट, मऊ"}, {"code": 903, "name": "सर्वोदय इन्टर कालेज, घोसी, मऊ"}, {"code": 904, "name": "श्री दधिवल इण्टर कालेज, रैनी, मऊ"}],
-  "मथुरा (Mathura)": [{"code": 901, "name": "राजकीय इण्टर कालेज, मथुरा"}, {"code": 902, "name": "ब्रज आदर्श इण्टर कालेज, मांट, मथुरा"}, {"code": 903, "name": "राधा बिहारी इण्टर कालेज, बरसाना, मथुरा"}, {"code": 904, "name": "श्री हजारीमल सोमानी नगरपालिका इण्टर कालेज, वृन्दावन, मथुरा"}, {"code": 951, "name": "चमेली देवी खण्डेलवाल बालिका इण्टर कालेज, मथुरा"}, {"code": 952, "name": "नगरपालिका कन्या इण्टर कालेज, कोसी कलां, मथुरा"}],
-  "महराजगंज (Maharajganj)": [{"code": 901, "name": "महराजगंज इन्टर कालेज, महराजगंज"}, {"code": 902, "name": "एस0 ए0 जे0 इन्टर कालेज, आनन्दनगर, महराजगंज"}],
-  "महोबा (Mahoba)": [{"code": 901, "name": "डी.ए.वी. इन्टर कालेज, महोबा"}, {"code": 902, "name": "राजकीय इन्टर कालेज, चरखारी, महोबा"}, {"code": 903, "name": "जनतन्त्र इन्टर कालेज, कुलपहाड़, महोबा"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, महोबा"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, चरखारी, महोबा"}],
-  "मिर्जापुर (Mirzapur)": [{"code": 901, "name": "रा0 इन्टर कालेज, मिर्जापुर"}, {"code": 902, "name": "शान्ति निकेतन इन्टर कालेज, पचोखरा, मिर्जापुर"}, {"code": 903, "name": "पी0 डी0 एन0 डी0 इन्टर कालेज, चुनार, मिर्जापुर"}, {"code": 904, "name": "बापू उप्रोध इन्टर कालेज, लालगंज, मिर्जापुर"}, {"code": 952, "name": "रा0 बा0 इन्टर कालेज, चुनार, मिर्जापुर"}],
-  "मुजफ्फर नगर (Muzaffarnagar)": [{"code": 901, "name": "राजकीय इण्टर कालेज, मुजफ्फरनगर"}, {"code": 902, "name": "डी.ए.वी. इण्टर कालेज, बुढ़ाना, मुजफ्फरनगर"}, {"code": 903, "name": "डी.ए.वी. इण्टर कालेज, जानसठ, मुजफ्फरनगर"}, {"code": 904, "name": "जनता इण्टर कालेज, गंगधाड़ी, खताौली, मुजफ्फरनगर"}, {"code": 905, "name": "सनातनधर्म इण्टर कालेज, मीरापुर, मुजफ्फरनगर"}, {"code": 906, "name": "जनता इण्टर कालेज, लच्छेड़ा, मुजफ्फरनगर"}, {"code": 951, "name": "वैदिक पुत्री कन्या इण्टर कालेज, नई मण्डी, मुजफ्फरनगर"}, {"code": 952, "name": "गोमती कन्या इण्टर कालेज, जानसठ, मुजफ्फरनगर"}],
-  "मुरादाबाद (Moradabad)": [{"code": 901, "name": "राजकीय इन्टर कालेज, मुरादाबाद"}, {"code": 902, "name": "एस.डी.एच. इन्टर कालेज, ठाकुरद्वारा, मुरादाबाद"}, {"code": 951, "name": "आर्य कन्या इन्टर कालेज, मुरादाबाद"}],
-  "मेरठ (Meerut)": [{"code": 901, "name": "राजकीय इण्टर कालेज, मेरठ"}, {"code": 902, "name": "कृषक इण्टर कालेज, मवाना, मेरठ"}, {"code": 903, "name": "सेन्ट चाल्र्स इण्टर कालेज, सरधना, मेरठ"}, {"code": 951, "name": "देवती देवी वीरेन्द्र कुमार, राजकीय कन्या इण्टर कालेज, माधवपुरम्, मेरठ"}, {"code": 953, "name": "सेन्ट जोसेफ कन्या इण्टर कालेज, सरधना, मेरठ"}],
-  "मैनपुरी (Mainpuri)": [{"code": 901, "name": "राजकीय इण्टर कालेज, मैनपुरी"}, {"code": 902, "name": "नेशनल इण्टर कालेज, भोंगांव, मैनपुरी"}, {"code": 903, "name": "जैन इण्टर कालेज, करहल, मैनपुरी"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, मैनपुरी"}, {"code": 952, "name": "कस्तूरबा गांधी कन्या इण्टर कालेज, भोंगांव, मैनपुरी"}],
-  "रामपुर (Rampur)": [{"code": 901, "name": "राजकीय रजा इन्टर कालेज, रामपुर"}, {"code": 902, "name": "राजकीय हामिद इन्टर कालेज, रामपुर"}, {"code": 903, "name": "राजकीय इन्टर कालेज, शाहाबाद, रामपुर"}, {"code": 904, "name": "आर्य विद्यालय इन्टर कालेज, मिलक, रामपुर"}, {"code": 905, "name": "डी.ए.वी. इन्टर कालेज, विशारनगर, विलासपुर, रामपुर"}, {"code": 906, "name": "राजकीय इन्टर कालेज, स्वार, रामपुर"}, {"code": 907, "name": "राजकीय इन्टर कालेज, मानकपुर बंजरिया, सैदनगर, टाण्डा, रामपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, किला, रामपुर"}, {"code": 952, "name": "विद्या मन्दिर कन्या इन्टर कालेज, रामपुर"}, {"code": 953, "name": "रेशम प्यारी कन्या इन्टर कालेज, मिलक, रामपुर"}, {"code": 954, "name": "राजकीय कन्या इन्टर कालेज, शाहाबाद, रामपुर"}, {"code": 955, "name": "डी.ए.वी.के. इन्टर कालेज, विलासपुर, रामपुर"}],
-  "रायबरेली (Raebareli)": [{"code": 901, "name": "राजकीय इन्टर कालेज, रायबरेली"}, {"code": 902, "name": "हरनारायण इन्टर कालेज, ऊंचाहार, रायबरेली"}, {"code": 903, "name": "बैसवारा इन्टर कालेज, लालगंज, रायबरेली"}, {"code": 904, "name": "राजा चन्द्रचूड़ सिंह विद्यापीठ इन्टर कालेज, महाराजगंज, रायबरेली"}, {"code": 905, "name": "भागीरथी इन्टर कालेज, मुराई बाग, डलमऊ, रायबरेली"}, {"code": 906, "name": "सर्वोदय विद्यापीठ इन्टर कालेज, सलोन, रायबरेली"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, रायबरेली"}],
-  "लखनऊ (Lucknow)": [{"code": 901, "name": "राजकीय जुबली इन्टर कालेज, लखनऊ"}, {"code": 902, "name": "राजकीय इन्टर कालेज, हुसैनाबाद, लखनऊ"}, {"code": 903, "name": "महात्मा गांधी इन्टर कालेज, मलिहाबाद, लखनऊ"}, {"code": 904, "name": "हरीचन्द इन्टर कालेज, सदर, लखनऊ"}, {"code": 905, "name": "राजकीय इन्टर कालेज, निशांतगंज, लखनऊ"}, {"code": 906, "name": "राज नारायण जायसवाल इन्टर कालेज, नगराम, लखनऊ"}, {"code": 951, "name": "राजकीय बालिका इण्टर कालेज, सिंगारनगर, लखनऊ"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, शाहमीना रोड, लखनऊ"}],
-  "ललितपुर (Lalitpur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, ललितपुर"}, {"code": 902, "name": "मदर्न सिंह इन्टर कालेज, तालबेहट, ललितपुर"}, {"code": 903, "name": "शान्ति निकेतन इन्टर कालेज, महरौनी, ललितपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, ललितपुर"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, तालबेहट, ललितपुर"}],
-  "वाराणसी (Varanasi)": [{"code": 901, "name": "राजकीय क्वींस इन्टर कालेज, वाराणसी"}, {"code": 902, "name": "सुभद्रा कुमार इन्टर कालेज, बसनी, वाराणसी"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, वाराणसी"}],
-  "शामली (Shamli)": [{"code": 901, "name": "पब्लिक इण्टर कालेज, कैराना, शामली"}, {"code": 902, "name": "डी.ए.वी. इण्टर कालेज, ऊन, शामली"}, {"code": 951, "name": "जैन कन्या इण्टर कालेज, शामली, शामली"}, {"code": 952, "name": "राजकीय बालिका इण्टर कालेज, कांधला, शामली"}],
-  "शाहजहांपुर (Shahjahanpur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, शाहजहांपुर"}, {"code": 902, "name": "पुवायां इन्टर कालेज, पुवायां, शाहजहांपुर"}, {"code": 903, "name": "सेठ सियाराम इन्टर कालेज, जलालाबाद, शाहजहांपुर"}, {"code": 904, "name": "आर.पी.एम. इन्टर कालेज, तिलहर, शाहजहांपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, शाहजहांपुर"}, {"code": 952, "name": "राजकीय कन्या इण्टर कालेज, पुवायां, शाहजहांपुर"}, {"code": 953, "name": "लाला बुलाकी दास हिन्दू कन्या इन्टर कालेज, तिलहर शाहजहांपुर"}],
-  "श्रावस्ती (Shravasti)": [{"code": 901, "name": "अलक्षेन्द्र इन्टर कालेज, भिनगा, श्रावस्ती"}],
-  "सन्त कबीर नगर (Sant Kabir Nagar)": [{"code": 901, "name": "कृषक औ0 पाल इन्टर कालेज, हरिहरपुर, सन्त कबीरनगर"}, {"code": 902, "name": "एच0 आर0 इन्टर कालेज, खलीलाबाद, सन्त कबीरनगर"}, {"code": 903, "name": "जगतगुरु शंकराचार्य इन्टर कालेज, मेहदावल, सन्त कबीरनगर"}],
-  "सम्भल (Sambhal)": [{"code": 901, "name": "हिन्द इन्टर कालेज, सम्भल, सम्भल"}, {"code": 902, "name": "एस.एम. इन्टर कालेज, चन्दौसी, सम्भल"}, {"code": 951, "name": "भरतिया कन्या इण्टर कालेज, चन्दौसी, सम्भल"}],
-  "सहारनपुर (Saharanpur)": [{"code": 901, "name": "राजकीय इण्टर कालेज, सहारनपुर"}, {"code": 902, "name": "डी.सी.जैन इण्टर कालेज, सरसावां, सहारनपुर"}, {"code": 903, "name": "के.एल.जी.एम. इण्टर कालेज, नकुड़, सहारनपुर"}, {"code": 904, "name": "एच.ए.वी. इण्टर कालेज, देवबन्द, सहारनपुर"}, {"code": 905, "name": "राजकीय इण्टर कालेज, पंचकुआँ, सहारनपुर"}, {"code": 951, "name": "दिगम्बर जैन कन्या इण्टर कालेज, सहारनपुर"}, {"code": 952, "name": "राजकीय कन्या इण्टर कालेज देवबन्द, सहारनपुर"}],
-  "सिद्धार्थनगर (Siddharth Nagar)": [{"code": 901, "name": "शिवपति इन्टर कालेज, शोहरतगढ़, सिद्धार्थनगर"}, {"code": 902, "name": "तिलक इन्टर कालेज, बांसी, सिद्धार्थनगर"}, {"code": 903, "name": "पीपुल्स इन्टर कालेज, डुमरियागंज, सिद्धार्थनगर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, डुमरियागंज, सिद्धार्थनगर"}],
-  "सीतापुर (Sitapur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, सीतापुर"}, {"code": 902, "name": "गांधी इन्टर कालेज, सिधौली, सीतापुर"}, {"code": 903, "name": "एच.आर.डी. इन्टर कालेज, बिस्वां, सीतापुर"}, {"code": 904, "name": "काल्विन इन्टर कालेज, महमूदाबाद, सीतापुर"}, {"code": 905, "name": "एम.डी. इन्टर कालेज, मिश्रिख, सीतापुर"}, {"code": 951, "name": "हिन्दू कन्या पाठशाला इन्टर कालेज, सीतापुर"}],
-  "सुल्तानपुर (Sultanpur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, सुल्तानपुर"}, {"code": 902, "name": "नेशनल इन्टर कालेज, कादीपुर, सुल्तानपुर"}, {"code": 903, "name": "सर्वोदय इन्टर कालेज, लम्भुआ, सुल्तानपुर"}, {"code": 951, "name": "केश कुमारी राजकीय बालिका इन्टर कालेज, सुल्तानपुर"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, कादीपुर, सुल्तानपुर"}],
-  "सोनभद्र (Sonbhadra)": [{"code": 901, "name": "राजा शारदा महेश इन्टर कालेज, राबर्ट्सगंज, सोनभद्र"}, {"code": 902, "name": "राजकीय इन्टर कालेज, घोरावल, सोनभद्र"}, {"code": 903, "name": "ओबरा इन्टर कालेज, ओबरा, सोनभद्र"}, {"code": 904, "name": "राजकीय इन्टर कालेज, दुद्धी, सोनभद्र"}, {"code": 905, "name": "राजकीय इन्टर कालेज, पिपरी, सोनभद्र"}],
-  "हमीरपुर (Hamirpur)": [{"code": 901, "name": "राजकीय इन्टर कालेज, हमीरपुर"}, {"code": 902, "name": "ब्रहानन्द इन्टर कालेज, राठ, हमीरपुर"}, {"code": 903, "name": "नेशनल इन्टर कालेज, मौदहा, हमीरपुर"}, {"code": 951, "name": "राजकीय बालिका इन्टर कालेज, हमीरपुर"}, {"code": 952, "name": "राजकीय बालिका इन्टर कालेज, राठ, हमीरपुर"}, {"code": 953, "name": "राजकीय बालिका इन्टर कालेज, मौदहा, हमीरपुर"}],
-  "हरदोई (Hardoi)": [{"code": 901, "name": "राजकीय इन्टर कालेज, हरदोई"}, {"code": 902, "name": "बाबा मंशानाथ इन्टर कालेज, बिलग्राम, हरदोई"}, {"code": 903, "name": "बसन्त लाल इन्टर कालेज, शाहाबाद, हरदोई"}, {"code": 904, "name": "भगवान बुद्ध इन्टर कालेज, सण्डीला, हरदोई"}, {"code": 951, "name": "वेणी माधव कन्या इन्टर कालेज, हरदोई"}],
-  "हाथरस (Hathras)": [{"code": 901, "name": "सरस्वती इण्टर कालेज, हाथरस"}, {"code": 902, "name": "जी.एस.हिन्दू इण्टर कालेज, सिकन्दराराऊ, हाथरस"}, {"code": 903, "name": "सादाबाद इण्टर कालेज, सादाबाद, हाथरस"}, {"code": 951, "name": "आर्य कन्या इण्टर कालेज, सिकन्दराराऊ, हाथरस"}],
-  "हापुड़ (Hapur)": [{"code": 901, "name": "दीवान इण्टर कालेज, हापुड़, हापुड़"}, {"code": 902, "name": "मारवाड़ इण्टर कालेज, पिलखुवा, हापुड़"}]
+  "अमेठी (Amethi)": [{"code":901,"name":"सुभाष पशुपतिनाथ इण्टर कालेज, तिलोई, अमेठी"},{"code":902,"name":"ए.एच. इण्टर कालेज, मुसाफिरखाना, अमेठी"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, अमेठी, अमेठी"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, गौरीगंज, अमेठी"},{"code":953,"name":"राजकीय बालिका इं0 का0, मुसाफिरखाना, अमेठी"}],
+  "अम्बेडकर नगर (Ambedkar Nagar)": [{"code":901,"name":"बी.एन. इन्टर कालेज, अकबरपुर, अम्बेडकर नगर"},{"code":902,"name":"होबर त्रिलोकनाथ इन्टर कालेज, टांडा, अम्बेडकर नगर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, अकबरपुर, अम्बेडकर नगर"}],
+  "अयोध्या (Ayodhya)": [{"code":901,"name":"राजकीय इन्टर कालेज, अयोध्या"},{"code":902,"name":"भारती इन्टर कालेज, बीकापुर, अयोध्या"},{"code":903,"name":"डा0 बद्री प्रसाद पाण्डेय स्मारक सर्वोदय इन्टर कालेज, रामगंज, अयोध्या"},{"code":904,"name":"हिन्दु इण्टर कालेज, रुदौली, अयोध्या"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, अयोध्या"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, रुदौली, अयोध्या"}],
+  "अलीगढ़ (Aligarh)": [{"code":901,"name":"नारसिंगी लाल राजकीय इण्टर कालेज, अलीगढ़"},{"code":902,"name":"के.एम.बी. इण्टर कालेज, अतरौली, अलीगढ़"},{"code":903,"name":"खैर इण्टर कालेज, खैर, अलीगढ़"},{"code":904,"name":"लक्ष्मी राज इण्टर कालेज, गभाना, अलीगढ़"},{"code":905,"name":"एस.डी. सिंह इण्टर कालेज, इगलास, अलीगढ़"},{"code":951,"name":"उदयसिंह कन्या इण्टर कालेज, अलीगढ़"}],
+  "आगरा (Agra)": [{"code":901,"name":"राजकीय इन्टर कालेज, आगरा"},{"code":902,"name":"गांधी स्मारक किसान इण्टर कालेज, किरावली, आगरा"},{"code":903,"name":"बजाज राष्ट्रीय इण्टर कालेज, फतेहपुर सीकरी, आगरा"},{"code":904,"name":"जनता इण्टर कालेज, खेरागढ़, आगरा"},{"code":905,"name":"जनता इण्टर कालेज, एतमादपुर, आगरा"},{"code":906,"name":"जनता इण्टर कालेज, फतेहाबाद, आगरा"},{"code":907,"name":"भदावर इण्टर कालेज, बाह, आगरा"},{"code":951,"name":"केदारनाथ सेक्सरिया बालिका इण्टर कालेज, बेलनगंज, आगरा"}],
+  "आजमगढ़ (Azamgarh)": [{"code":901,"name":"शिवली नेशनल इन्टर कालेज, आजमगढ़"},{"code":902,"name":"उद्योग विद्यालय इन्टर कालेज, कोयलसा, आजमगढ़"},{"code":903,"name":"इन्टर कालेज, कप्तानगंज, आजमगढ़"},{"code":904,"name":"एस0 के0 जी0 एन0 इन्टर कालेज, लालगंज, आजमगढ़"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, आजमगढ़"}],
+  "इटावा (Etawah)": [{"code":901,"name":"राजकीय इन्टर कालेज, इटावा"},{"code":902,"name":"जनसहयोगी इन्टर कालेज, मोढ़ी, इटावा"},{"code":903,"name":"श्री अमिताभ बच्चन राजकीय इन्टर कालेज, सैफई, इटावा"},{"code":904,"name":"हिन्दू विद्यालय इन्टर कालेज, जसवन्तनगर, इटावा"},{"code":905,"name":"जवाहर इन्टर कालेज, चकरनगर, इटावा"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, इटावा"}],
+  "उन्नाव (Unnao)": [{"code":901,"name":"राजकीय इन्टर कालेज, उन्नाव"},{"code":902,"name":"महात्मा गांधी इन्टर कालेज, सफीपुर, उन्नाव"},{"code":903,"name":"भारतीय आदर्श एंग्लो-संस्कृत इन्टर कालेज, पुरवा, उन्नाव"},{"code":904,"name":"गांधी मिशन एच.एम.के.डी. इन्टर कालेज, मोहान, उन्नाव"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, उन्नाव"},{"code":952,"name":"महात्मा गांधी बालिका इन्टर कालेज, सफीपुर, उन्नाव"},{"code":953,"name":"राजकीय बालिका इन्टर कालेज, नवाबगंज, उन्नाव"},{"code":954,"name":"पार्वती बालिका इन्टर कालेज, बींघापुर, उन्नाव"}],
+  "एटा (Etah)": [{"code":901,"name":"राजकीय इण्टर कालेज, एटा"},{"code":902,"name":"डी.ए.वी. इण्टर कालेज, अलीगंज, एटा"},{"code":903,"name":"एम.जी. इण्टर कालेज, जलेसर, एटा"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, एटा"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, जलेसर, एटा"}],
+  "औरैया (Auraiya)": [{"code":901,"name":"वैदिक टेक्निकल इन्टर कालेज, दिबियापुर औरैया"},{"code":902,"name":"पब्लिक इन्टर कालेज, बिधूना, औरैया"},{"code":903,"name":"श्री जनता इन्टर कालेज, अजीतमल, औरैया"},{"code":904,"name":"नगर पालिका इन्टर कालेज, औरैया"}],
+  "कन्नौज (Kannauj)": [{"code":901,"name":"के.के. इन्टर कालेज, कन्नौज"},{"code":902,"name":"हीरा लाल बी.एन. इन्टर कालेज, छिबरामऊ, कन्नौज"},{"code":903,"name":"दुर्गा नारायण इन्टर कालेज, तिर्वा, कन्नौज"},{"code":951,"name":"जे.पी. गल्र्स इन्टर कालेज, कन्नौज"},{"code":952,"name":"छिबरामऊ गल्र्स इन्टर कालेज, छिबरामऊ, कन्नौज"},{"code":953,"name":"इन्द्रादेवी गल्र्स इन्टर कालेज, तिर्वा, कन्नौज"}],
+  "कानपुर देहात (रमाबाई नगर) (Kanpur Dehat - Ramabai Nagar)": [{"code":901,"name":"अकबरपुर इण्टर कालेज, अकबरपुर, (रमाबाई नगर) कानपुर देहात"},{"code":902,"name":"बी.एम.एस. इण्टर कालेज, कठेठी, (रमाबाई नगर) कानपुर देहात"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, पुखरायां, (रमाबाई नगर) कानपुर देहात"}],
+  "कानपुर नगर (Kanpur Nagar)": [{"code":901,"name":"राजकीय इन्टर कालेज, कानपुर"},{"code":902,"name":"बिल्हौर इन्टर कालेज, बिल्हौर कानपुर"},{"code":903,"name":"गांधी विद्यापीठ इन्टर कालेज, घाटमपुर, कानपुर"},{"code":951,"name":"पूर्णा देवी खन्ना बालिका इण्टर कालेज, कानपुर"}],
+  "कासगंज (Kasganj)": [{"code":901,"name":"आजाद गांधी इं. कालेज, कासगंज, कासगंज"},{"code":902,"name":"श्री भागवत राष्ट्रीय इण्टर कालेज, पटियाली, कासगंज"},{"code":951,"name":"राजकीय बालिका इं. कालेज, कासगंज, कासगंज"}],
+  "कुशीनगर (Kushinagar)": [{"code":901,"name":"गोस्वामी तुलसीदास इन्टर कालेज, पडरौना, कुशीनगर"},{"code":902,"name":"एफ0 एम0 इन्टर कालेज, तमकुही राज, कुशीनगर"}],
+  "कौशाम्बी (Kaushambi)": [{"code":901,"name":"दुर्गादेवी इन्टर कालेज, आोसा मंझनपुर, कौशाम्बी"},{"code":902,"name":"एस.ए.वी. इन्टर कालेज, सैनी, कौशाम्बी"},{"code":903,"name":"श्री मान सिंह इन्टर कालेज, अलीपुर जीता, कौशाम्बी"},{"code":904,"name":"हुबलाल इन्टर कालेज, भरवारी, कौशाम्बी"},{"code":905,"name":"जवाहर लाल नेहरू इन्टर कालेज, सरसांवा, कौशाम्बी"}],
+  "खीरी (Kheri)": [{"code":901,"name":"राजकीय इन्टर कालेज, लखीमपुर खीरी"},{"code":902,"name":"जे.पी. इन्टर कालेज, मोहम्मदी, खीरी"},{"code":903,"name":"जिला पंचायत इन्टर कालेज, निधासन, खीरी"},{"code":904,"name":"बी.बी.एल.सी. इन्टर कालेज, खमरिया, खीरी"},{"code":905,"name":"पब्लिक इन्टर कालेज, गोला गोकर्णनाथ, खीरी"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, लखीमपुर, खीरी"}],
+  "गाजियाबाद (Ghaziabad)": [{"code":901,"name":"राजकीय इण्टर कालेज, नन्दग्राम, गाजियाबाद"},{"code":902,"name":"पी.बी.ए.एस. इण्टर कालेज, मोदीनगर, गाजियाबाद"},{"code":951,"name":"राजकीय कन्या इण्टर कालेज, विजयनगर, गाजियाबाद"}],
+  "गाजीपुर (Ghazipur)": [{"code":901,"name":"राजकीय सिटी इन्टर कालेज, गाजीपुर"},{"code":902,"name":"टाउन नेशनल इन्टर कालेज, सैदपुर, गाजीपुर"},{"code":903,"name":"श्री मोतीलाल नेहरू इन्टर कालेज, बासपुर, गाजीपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, गाजीपुर"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, जमानिया, गाजीपुर"},{"code":953,"name":"राजकीय बालिका इन्टर कालेज, सैदपुर, गाजीपुर"},{"code":954,"name":"राजकीय बालिका इन्टर कालेज, मोहम्मदाबाद, गाजीपुर"}],
+  "गोण्डा (Gonda)": [{"code":901,"name":"फखरुद्दीन अली अहमद राजकीय इन्टर कालेज, गोण्डा"},{"code":902,"name":"कन्हैया लाल इन्टर कालेज, कर्नलगंज, गोण्डा"},{"code":903,"name":"एम.डी.बी.एस. इन्टर कालेज, बलरामपुर, गोण्डा"},{"code":904,"name":"ए.पी. इन्टर कालेज, मनकापुर, गोण्डा"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, गोण्डा"}],
+  "गोरखपुर (Gorakhpur)": [{"code":901,"name":"राजकीय जुबली इन्टर कालेज, गोरखपुर"},{"code":902,"name":"गांधी इन्टर कालेज, महुआपर बड़हलगंज, गोरखपुर"},{"code":903,"name":"एस0 के0 इन्टर कालेज, कौड़ीराम, गोरखपुर"},{"code":904,"name":"जे0 पी0 इन्टर कालेज, कैम्पियरगंज, गोरखपुर"},{"code":905,"name":"भोला राम मस्करा इन्टर कालेज, सहजनवां, गोरखपुर"},{"code":906,"name":"श्री गणेश पाण्डेय इन्टर कालेज, कटघर खजनी, गोरखपुर"},{"code":951,"name":"ए0 डी0 राजकीय बालिका इन्टर कालेज, गोरखपुर"}],
+  "गौतमबुद्ध नगर (Gautam Buddha Nagar)": [{"code":901,"name":"मिहिरभोज इण्टर कालेज, दादरी, गौतमबुद्धनगर"}],
+  "चन्दौली (Chandauli)": [{"code":901,"name":"महेन्द्र टेक्निकल इन्टर कालेज, चन्दौली"},{"code":902,"name":"आ0 ना0 रा0 इन्टर कालेज, चकिया, चन्दौली"},{"code":951,"name":"जिला परिषद् क0 इन्टर कालेज, चन्दौली"},{"code":952,"name":"जिला पंचायत क0 इन्टर कालेज, चकिया, चन्दौली"}],
+  "चित्रकूट (Chitrakoot)": [{"code":901,"name":"सेठ राधाकृष्ण पोद्दार इन्टर कालेज, चित्रकूट धाम"},{"code":902,"name":"चित्रकूट इन्टर कालेज, कर्वी, चित्रकूट धाम"},{"code":903,"name":"रतन नाथ इन्टर कालेज, रसिन, चित्रकूट धाम"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, कर्वी, चित्रकूट धाम"}],
+  "जालौन (Jalaun)": [{"code":901,"name":"राजकीय इन्टर कालेज, उरई, जालौन"},{"code":902,"name":"छत्रसाल इन्टर कालेज, जालौन"},{"code":903,"name":"एम.एस.वी. इन्टर कालेज, कालपी, जालौन"},{"code":904,"name":"राजकीय इन्टर कालेज, बंगरा, जालौन"},{"code":905,"name":"राजकीय इन्टर कालेज, कदौरा, जालौन"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, उरई, जालौन"},{"code":952,"name":"बालिका इन्टर कालेज, जालौन"},{"code":953,"name":"आर्य कन्या इन्टर कालेज, कालपी, जालौन"}],
+  "जौनपुर (Jaunpur)": [{"code":901,"name":"टी0 डी0 इन्टर कालेज, जौनपुर"},{"code":902,"name":"एस0 बी0 इन्टर कालेज, बदलापुर, जौनपुर"},{"code":903,"name":"सेन्ट थामस इन्टर कालेज, शाहगंज, जौनपुर"},{"code":904,"name":"सार्वजनिक इन्टर कालेज, मुंगराबादशाहपुर, जौनपुर"},{"code":905,"name":"बी0 एन0 बी0 इन्टर कालेज, मडियाहूं, जौनपुर"},{"code":906,"name":"तेज बहादुर सिंह इन्टर कालेज, निगोह, जौनपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, जौनपुर"}],
+  "ज्योतिबाराव फूलेनगर (अमरोहा) (Jyotiba Phule Nagar - Amroha)": [{"code":901,"name":"राजकीय इन्टर कालेज, जे.पी.नगर"},{"code":902,"name":"गांधी विद्यालय इन्टर कालेज, धनौरा, जे.पी.नगर"},{"code":903,"name":"श्रीमती सुखदेवी इन्टर कालेज, हसनपुर, जे.पी.नगर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, अमरोहा, जे.पी.नगर"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, हसनपुर, जे.पी.नगर"},{"code":953,"name":"राजकीय बालिका इन्टर कालेज, बछरायूं, जे.पी.नगर"}],
+  "झांसी (Jhansi)": [{"code":901,"name":"राजकीय इन्टर कालेज, झांसी"},{"code":902,"name":"आदर्श इन्दर कालेज, मोंठ, झांसी"},{"code":903,"name":"राजकीय इन्टर कालेज, समथर, झांसी"},{"code":904,"name":"खैर इन्टर कालेज, गुरसरांव, झांसी"},{"code":905,"name":"एल.डी. दमेले इन्टर कालेज, मऊ रानीपुर, झांसी"},{"code":951,"name":"सूरज प्रसाद राजकीय बालिका इन्टर कालेज, झांसी"}],
+  "देवरिया (Deoria)": [{"code":901,"name":"राजकीय इन्टर कालेज, देवरिया"},{"code":902,"name":"बापू इन्टर कालेज, सलेमपुर, देवरिया"},{"code":903,"name":"बी0 आर0 डी0 इन्टर कालेज, भाटपाररानी, देवरिया"},{"code":904,"name":"डी0 एन0 इन्टर कालेज, रुद्रपुर, देवरिया"},{"code":905,"name":"बब्बन सिंह इन्टर कालेज, रतसिया कोठी, देवरिया"},{"code":906,"name":"अभयानन्द शिक्षा संस्थान इन्टर कालेज, शिवधरिया, देवरिया"},{"code":907,"name":"आचार्य नरेन्द्र देव इन्टर कालेज, पथरदेवा, देवरिया"},{"code":951,"name":"कस्तूरबा गांधी राजकीय बालिका इन्टर कालेज, देवरिया"}],
+  "पीलीभीत (Pilibhit)": [{"code":901,"name":"ड्रमण्ड राजकीय इन्टर कालेज, पीलीभीत"},{"code":902,"name":"पब्लिक इन्टर कालेज, पूरनपुर, पीलीभीत"},{"code":903,"name":"एस.आर.एम. इन्टर कालेज, बीसलपुर, पीलीभीत"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, पीलीभीत"}],
+  "प्रतापगढ़ (Pratapgarh)": [{"code":901,"name":"राजकीय इन्टर कालेज, प्रतापगढ़"},{"code":902,"name":"एस.पी. इन्टर कालेज, कुण्डा, प्रतापगढ़"},{"code":903,"name":"रामराज इन्टर कालेज, पट्टी, प्रतापगढ़"},{"code":904,"name":"राम अंजोर इन्टर कालेज, लालगंज, प्रतापगढ़"},{"code":905,"name":"जगदीश नारायण इन्टर कालेज, ढिगवस, प्रतापगढ़"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, प्रतापगढ़"}],
+  "प्रयागराज (Prayagraj)": [{"code":901,"name":"राजकीय इन्टर कालेज, प्रयागराज"},{"code":902,"name":"मेवालाल अयोध्या प्रसाद गुप्ता स्मारक इन्टर कालेज, सोरांव, प्रयागराज"},{"code":903,"name":"मदन मोहन मालवीय इन्टर कालेज, करछना, प्रयागराज"},{"code":904,"name":"विजय लक्ष्मी इन्टर कालेज, फूलपुर, प्रयागराज"},{"code":905,"name":"राजा कमलाकर इन्टर कालेज, शंकरगढ़, प्रयागराज"},{"code":906,"name":"गांधी इन्टर कालेज, पटेल नगर, झूंसी, प्रयागराज"},{"code":907,"name":"श्री राम प्रताप इन्टर कालेज, सिरसा, प्रयागराज"},{"code":908,"name":"बद्री नाथ तिवारी इन्टर कालेज, मेजा रोड, प्रयागराज"},{"code":909,"name":"महर्षि कृष्ण इन्टर कालेज, हंडिया, प्रयागराज"},{"code":910,"name":"सरदार पटेल इन्टर कालेज, सिकरों कोरांव, प्रयागराज"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, प्रयागराज"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, फूलपुर, प्रयागराज"}],
+  "फतेहपुर (Fatehpur)": [{"code":901,"name":"राजकीय इन्टर कालेज, फतेहपुर"},{"code":902,"name":"दयानन्द इन्टर कालेज, बिन्दकी, फतेहपुर"},{"code":903,"name":"इन्टर कालेज, बुदवन, फतेहपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, फतेहपुर"},{"code":952,"name":"सोहन लाल द्विवेदी राजकीय बालिका इन्टर कालेज, बिन्दकी, फतेहपुर"}],
+  "फर्रुखाबाद (Farrukhabad)": [{"code":901,"name":"राजकीय इन्टर कालेज फतेहगढ़, फर्रुखाबाद"},{"code":902,"name":"एस.एन. इन्टर कालेज, कायमगंज, फर्रुखाबाद"},{"code":903,"name":"दयानन्द इन्टर कालेज, अमृतपुर, फर्रुखाबाद"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, फतेहगढ़, फर्रुखाबाद"},{"code":952,"name":"कन्या विद्यापीठ इन्टर कालेज, कायमगंज, फर्रुखाबाद"}],
+  "फिरोजाबाद (Firozabad)": [{"code":901,"name":"पी.डी. जैन इण्टर कालेज, फिरोजाबाद"},{"code":902,"name":"लोक राष्ट्रीय इण्टर कालेज, जसराना, फिरोजाबाद"},{"code":951,"name":"महात्मा गांधी कन्या इण्टर कालेज, फिरोजाबाद"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, टूण्डला, फिरोजाबाद"},{"code":953,"name":"बी.डी.एम. कन्या इण्टर कालेज, शिकोहाबाद, फिरोजाबाद"}],
+  "बदायूं (Badaun)": [{"code":901,"name":"राजकीय इन्टर कालेज, बदायूं"},{"code":902,"name":"मदनलाल इन्टर कालेज, बिसौली, बदायूं"},{"code":903,"name":"प्रमोद इन्टर कालेज, सहसवान, बदायूं"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बदायूं"}],
+  "बरेली (Bareilly)": [{"code":901,"name":"राजकीय इन्टर कालेज, बरेली"},{"code":902,"name":"एम.जी.एम. इन्टर कालेज, बहेड़ी, बरेली"},{"code":903,"name":"जय प्रकाश नारायण इन्टर कालेज, नवाबगंज, बरेली"},{"code":904,"name":"श्री सुभाष इन्टर कालेज, आंवला, बरेली"},{"code":905,"name":"चौधरी राजेश्वर सिंह किसान इन्टर कालेज, फरीदपुर, बरेली"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बरेली"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, आंवला, बरेली"},{"code":953,"name":"श्यामसुन्दर कन्या इन्टर कालेज, फरीदपुर, बरेली"}],
+  "बलरामपुर (Balrampur)": [{"code":901,"name":"मोहम्मद युसूफ उस्मानी इन्टर कालेज, उतरौला, बलरामपुर"},{"code":902,"name":"एम.पी.पी. इन्टर कालेज, बलरामपुर"},{"code":903,"name":"स्वतन्त्र भारत इन्टर कालेज, तुलसीपुर, बलरामपुर"}],
+  "बलिया (Ballia)": [{"code":901,"name":"राजकीय इन्टर कालेज, बलिया"},{"code":902,"name":"बांसडीह इन्टर कालेज, बांसडीह, बलिया"},{"code":903,"name":"नरहेजी इन्टर कालेज, नरही रसड़ा, बलिया"},{"code":904,"name":"रामनाथ पाठक इन्टरमीडिएट कालेज, मुरालपट्टी, लालगंज, बलिया"}],
+  "बस्ती (Basti)": [{"code":901,"name":"राजकीय इन्टर कालेज, बस्ती"},{"code":902,"name":"किसान इन्टर कालेज, भानपुर, बस्ती"},{"code":903,"name":"नेशनल इन्टर कालेज, हरैया, बस्ती"},{"code":951,"name":"एम.पी.क0 इन्टर कालेज, हरैया, बस्ती"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, बस्ती"}],
+  "बहराइच (Bahraich)": [{"code":901,"name":"राजकीय इन्टर कालेज, बहराइच"},{"code":902,"name":"हुकुम सिंह इन्टर कालेज, कैसरगंज, बहराइच"},{"code":903,"name":"श्रीराम जानकी इन्टर कालेज, रूपईडीहा, बहराइच"},{"code":904,"name":"राजकीय इन्टर कालेज, लखैयाकला, बहराइच"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बहराइच"}],
+  "बांदा (Banda)": [{"code":901,"name":"राजकीय इन्टर कालेज, बांदा"},{"code":902,"name":"पं. ज्वाला प्रसाद इन्टर कालेज, बबेरू, बांदा"},{"code":903,"name":"राजकुमार इन्टर कालेज, नरैनी, बांदा"},{"code":904,"name":"ब्रह्मा विज्ञान इन्टर कालेज, अतर्रा, बांदा"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बांदा"}],
+  "बागपत (Baghpat)": [{"code":901,"name":"यमुना इण्टर कालेज, बागपत"},{"code":902,"name":"जनता वैदिक इण्टर कालेज, बड़ौत, बागपत"},{"code":903,"name":"जैन स्थानकवासी कन्या इण्टर कालेज, बड़ौत, बागपत"},{"code":904,"name":"आदर्श इण्टर कालेज, डौला, बागपत"}],
+  "बाराबंकी (Barabanki)": [{"code":901,"name":"राजकीय इन्टर कालेज, बाराबंकी"},{"code":902,"name":"यूनियन इन्टर कालेज, रामनगर, बाराबंकी"},{"code":903,"name":"सार्वजनिक विद्यालय इन्टर कालेज, हैदरगढ़, बाराबंकी"},{"code":904,"name":"राजकीय इन्टर कालेज, सिरौली, गौसपुर, बाराबंकी"},{"code":905,"name":"पटेल पंचायत इन्टर कालेज, रामसनेही घाट, बाराबंकी"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बाराबंकी"}],
+  "बिजनौर (Bijnor)": [{"code":901,"name":"राजकीय इन्टर कालेज, बिजनौर"},{"code":902,"name":"राजकीय इन्टर कालेज, नजीबाबाद, बिजनौर"},{"code":903,"name":"एम.एम. इन्टर कालेज, नगीना, बिजनौर"},{"code":904,"name":"के.एम. इन्टर कालेज, धामपुर, बिजनौर"},{"code":905,"name":"एम.एम. इन्टर कालेज, चांदपुर, बिजनौर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, बिजनौर"},{"code":952,"name":"मूर्तिदेवी कन्या इन्टर कालेज, नजीबाबाद, बिजनौर"},{"code":953,"name":"दयानन्द वैदिक कन्या इन्टर कालेज, नगीना, बिजनौर"},{"code":954,"name":"कन्या इन्टर कालेज, धामपुर, बिजनौर"},{"code":955,"name":"वैदिक कन्या इन्टर कालेज, चांदपुर, बिजनौर"}],
+  "बुलन्दशहर (Bulandshahr)": [{"code":901,"name":"राजकीय इण्टर कालेज, बुलन्दशहर"},{"code":902,"name":"एल.डी.ए.बी. इण्टर कालेज, अनूपशहर, बुलन्दशहर"},{"code":903,"name":"कुबेर इण्टर कालेज, डिबाई, बुलन्दशहर"},{"code":904,"name":"एस.एम.जे.ई.सी. इण्टर कालेज, खुर्जा, बुलन्दशहर"},{"code":905,"name":"अग्रसेन इण्टर कालेज, सिकन्दराबाद, बुलन्दशहर"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, बुलन्दशहर"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, भुवन बहादुरनगर, बुलन्दशहर"},{"code":953,"name":"एस.के.जे. कन्या इण्टर कालेज, डिबाई, बुलन्दशहर"},{"code":954,"name":"आर्य कन्या पाठशाला इण्टर कालेज, खुर्जा, बुलन्दशहर"},{"code":955,"name":"डी.डी. कबाड़ी इण्टर कालेज, सिकन्दराबाद, बुलन्दशहर"}],
+  "भदोही (सन्त रविदास नगर) (Bhadohi - Sant Ravidas Nagar)": [{"code":901,"name":"वि0 ना0 रा0 इन्टर कालेज, ज्ञानपुर, भदोही"},{"code":902,"name":"इन्द्र बहादुर सिंह नेशनल इन्टर कालेज, भदोही"},{"code":951,"name":"जिला परिषद् क0 इन्टर कालेज, ज्ञानपुर, भदोही"},{"code":952,"name":"ज्ञानदेवी बालिका इन्टर कालेज, भदोही"}],
+  "मऊ (Mau)": [{"code":901,"name":"डी0 ए0 वी0 इन्टर कालेज, मऊ"},{"code":902,"name":"विक्ट्री इन्टर कालेज, दोहरी घाट, मऊ"},{"code":903,"name":"सर्वोदय इन्टर कालेज, घोसी, मऊ"},{"code":904,"name":"श्री दधिवल इण्टर कालेज, रैनी, मऊ"}],
+  "मथुरा (Mathura)": [{"code":901,"name":"राजकीय इण्टर कालेज, मथुरा"},{"code":902,"name":"ब्रज आदर्श इण्टर कालेज, मांट, मथुरा"},{"code":903,"name":"राधा बिहारी इण्टर कालेज, बरसाना, मथुरा"},{"code":904,"name":"श्री हजारीमल सोमानी नगरपालिका इण्टर कालेज, वृन्दावन, मथुरा"},{"code":951,"name":"चमेली देवी खण्डेलवाल बालिका इण्टर कालेज, मथुरा"},{"code":952,"name":"नगरपालिका कन्या इण्टर कालेज, कोसी कलां, मथुरा"}],
+  "महराजगंज (Maharajganj)": [{"code":901,"name":"महराजगंज इन्टर कालेज, महराजगंज"},{"code":902,"name":"एस0 ए0 जे0 इन्टर कालेज, आनन्दनगर, महराजगंज"}],
+  "महोबा (Mahoba)": [{"code":901,"name":"डी.ए.वी. इन्टर कालेज, महोबा"},{"code":902,"name":"राजकीय इन्टर कालेज, चरखारी, महोबा"},{"code":903,"name":"जनतन्त्र इन्टर कालेज, कुलपहाड़, महोबा"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, महोबा"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, चरखारी, महोबा"}],
+  "मिर्जापुर (Mirzapur)": [{"code":901,"name":"रा0 इन्टर कालेज, मिर्जापुर"},{"code":902,"name":"शान्ति निकेतन इन्टर कालेज, पचोखरा, मिर्जापुर"},{"code":903,"name":"पी0 डी0 एन0 डी0 इन्टर कालेज, चुनार, मिर्जापुर"},{"code":904,"name":"बापू उप्रोध इन्टर कालेज, लालगंज, मिर्जापुर"},{"code":952,"name":"रा0 बा0 इन्टर कालेज, चुनार, मिर्जापुर"}],
+  "मुजफ्फर नगर (Muzaffarnagar)": [{"code":901,"name":"राजकीय इण्टर कालेज, मुजफ्फरनगर"},{"code":902,"name":"डी.ए.वी. इण्टर कालेज, बुढ़ाना, मुजफ्फरनगर"},{"code":903,"name":"डी.ए.वी. इण्टर कालेज, जानसठ, मुजफ्फरनगर"},{"code":904,"name":"जनता इण्टर कालेज, गंगधाड़ी, खताौली, मुजफ्फरनगर"},{"code":905,"name":"सनातनधर्म इण्टर कालेज, मीरापुर, मुजफ्फरनगर"},{"code":906,"name":"जनता इण्टर कालेज, लच्छेड़ा, मुजफ्फरनगर"},{"code":951,"name":"वैदिक पुत्री कन्या इण्टर कालेज, नई मण्डी, मुजफ्फरनगर"},{"code":952,"name":"गोमती कन्या इण्टर कालेज, जानसठ, मुजफ्फरनगर"}],
+  "मुरादाबाद (Moradabad)": [{"code":901,"name":"राजकीय इन्टर कालेज, मुरादाबाद"},{"code":902,"name":"एस.डी.एच. इन्टर कालेज, ठाकुरद्वारा, मुरादाबाद"},{"code":951,"name":"आर्य कन्या इन्टर कालेज, मुरादाबाद"}],
+  "मेरठ (Meerut)": [{"code":901,"name":"राजकीय इण्टर कालेज, मेरठ"},{"code":902,"name":"कृषक इण्टर कालेज, मवाना, मेरठ"},{"code":903,"name":"सेन्ट चाल्र्स इण्टर कालेज, सरधना, मेरठ"},{"code":951,"name":"देवती देवी वीरेन्द्र कुमार, राजकीय कन्या इण्टर कालेज, माधवपुरम्, मेरठ"},{"code":953,"name":"सेन्ट जोसेफ कन्या इण्टर कालेज, सरधना, मेरठ"}],
+  "मैनपुरी (Mainpuri)": [{"code":901,"name":"राजकीय इण्टर कालेज, मैनपुरी"},{"code":902,"name":"नेशनल इण्टर कालेज, भोंगांव, मैनपुरी"},{"code":903,"name":"जैन इण्टर कालेज, करहल, मैनपुरी"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, मैनपुरी"},{"code":952,"name":"कस्तूरबा गांधी कन्या इण्टर कालेज, भोंगांव, मैनपुरी"}],
+  "रामपुर (Rampur)": [{"code":901,"name":"राजकीय रजा इन्टर कालेज, रामपुर"},{"code":902,"name":"राजकीय हामिद इन्टर कालेज, रामपुर"},{"code":903,"name":"राजकीय इन्टर कालेज, शाहाबाद, रामपुर"},{"code":904,"name":"आर्य विद्यालय इन्टर कालेज, मिलक, रामपुर"},{"code":905,"name":"डी.ए.वी. इन्टर कालेज, विशारनगर, विलासपुर, रामपुर"},{"code":906,"name":"राजकीय इन्टर कालेज, स्वार, रामपुर"},{"code":907,"name":"राजकीय इन्टर कालेज, मानकपुर बंजरिया, सैदनगर, टाण्डा, रामपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, किला, रामपुर"},{"code":952,"name":"विद्या मन्दिर कन्या इन्टर कालेज, रामपुर"},{"code":953,"name":"रेशम प्यारी कन्या इन्टर कालेज, मिलक, रामपुर"},{"code":954,"name":"राजकीय कन्या इन्टर कालेज, शाहाबाद, रामपुर"},{"code":955,"name":"डी.ए.वी.के. इन्टर कालेज, विलासपुर, रामपुर"}],
+  "रायबरेली (Raebareli)": [{"code":901,"name":"राजकीय इन्टर कालेज, रायबरेली"},{"code":902,"name":"हरनारायण इन्टर कालेज, ऊंचाहार, रायबरेली"},{"code":903,"name":"बैसवारा इन्टर कालेज, लालगंज, रायबरेली"},{"code":904,"name":"राजा चन्द्रचूड़ सिंह विद्यापीठ इन्टर कालेज, महाराजगंज, रायबरेली"},{"code":905,"name":"भागीरथी इन्टर कालेज, मुराई बाग, डलमऊ, रायबरेली"},{"code":906,"name":"सर्वोदय विद्यापीठ इन्टर कालेज, सलोन, रायबरेली"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, रायबरेली"}],
+  "लखनऊ (Lucknow)": [{"code":901,"name":"राजकीय जुबली इन्टर कालेज, लखनऊ"},{"code":902,"name":"राजकीय इन्टर कालेज, हुसैनाबाद, लखनऊ"},{"code":903,"name":"महात्मा गांधी इन्टर कालेज, मलिहाबाद, लखनऊ"},{"code":904,"name":"हरीचन्द इन्टर कालेज, सदर, लखनऊ"},{"code":905,"name":"राजकीय इन्टर कालेज, निशांतगंज, लखनऊ"},{"code":906,"name":"राज नारायण जायसवाल इन्टर कालेज, नगराम, लखनऊ"},{"code":951,"name":"राजकीय बालिका इण्टर कालेज, सिंगारनगर, लखनऊ"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, शाहमीना रोड, लखनऊ"}],
+  "ललितपुर (Lalitpur)": [{"code":901,"name":"राजकीय इन्टर कालेज, ललितपुर"},{"code":902,"name":"मदर्न सिंह इन्टर कालेज, तालबेहट, ललितपुर"},{"code":903,"name":"शान्ति निकेतन इन्टर कालेज, महरौनी, ललितपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, ललितपुर"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, तालबेहट, ललितपुर"}],
+  "वाराणसी (Varanasi)": [{"code":901,"name":"राजकीय क्वींस इन्टर कालेज, वाराणसी"},{"code":902,"name":"सुभद्रा कुमार इन्टर कालेज, बसनी, वाराणसी"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, वाराणसी"}],
+  "शामली (Shamli)": [{"code":901,"name":"पब्लिक इण्टर कालेज, कैराना, शामली"},{"code":902,"name":"डी.ए.वी. इण्टर कालेज, ऊन, शामली"},{"code":951,"name":"जैन कन्या इण्टर कालेज, शामली, शामली"},{"code":952,"name":"राजकीय बालिका इण्टर कालेज, कांधला, शामली"}],
+  "शाहजहांपुर (Shahjahanpur)": [{"code":901,"name":"राजकीय इन्टर कालेज, शाहजहांपुर"},{"code":902,"name":"पुवायां इन्टर कालेज, पुवायां, शाहजहांपुर"},{"code":903,"name":"सेठ सियाराम इन्टर कालेज, जलालाबाद, शाहजहांपुर"},{"code":904,"name":"आर.पी.एम. इन्टर कालेज, तिलहर, शाहजहांपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, शाहजहांपुर"},{"code":952,"name":"राजकीय कन्या इण्टर कालेज, पुवायां, शाहजहांपुर"},{"code":953,"name":"लाला बुलाकी दास हिन्दू कन्या इन्टर कालेज, तिलहर शाहजहांपुर"}],
+  "श्रावस्ती (Shravasti)": [{"code":901,"name":"अलक्षेन्द्र इन्टर कालेज, भिनगा, श्रावस्ती"}],
+  "सन्त कबीर नगर (Sant Kabir Nagar)": [{"code":901,"name":"कृषक औ0 पाल इन्टर कालेज, हरिहरपुर, सन्त कबीरनगर"},{"code":902,"name":"एच0 आर0 इन्टर कालेज, खलीलाबाद, सन्त कबीरनगर"},{"code":903,"name":"जगतगुरु शंकराचार्य इन्टर कालेज, मेहदावल, सन्त कबीरनगर"}],
+  "सम्भल (Sambhal)": [{"code":901,"name":"हिन्द इन्टर कालेज, सम्भल, सम्भल"},{"code":902,"name":"एस.एम. इन्टर कालेज, चन्दौसी, सम्भल"},{"code":951,"name":"भरतिया कन्या इण्टर कालेज, चन्दौसी, सम्भल"}],
+  "सहारनपुर (Saharanpur)": [{"code":901,"name":"राजकीय इण्टर कालेज, सहारनपुर"},{"code":902,"name":"डी.सी.जैन इण्टर कालेज, सरसावां, सहारनपुर"},{"code":903,"name":"के.एल.जी.एम. इण्टर कालेज, नकुड़, सहारनपुर"},{"code":904,"name":"एच.ए.वी. इण्टर कालेज, देवबन्द, सहारनपुर"},{"code":905,"name":"राजकीय इण्टर कालेज, पंचकुआँ, सहारनपुर"},{"code":951,"name":"दिगम्बर जैन कन्या इण्टर कालेज, सहारनपुर"},{"code":952,"name":"राजकीय कन्या इण्टर कालेज देवबन्द, सहारनपुर"}],
+  "सिद्धार्थनगर (Siddharth Nagar)": [{"code":901,"name":"शिवपति इन्टर कालेज, शोहरतगढ़, सिद्धार्थनगर"},{"code":902,"name":"तिलक इन्टर कालेज, बांसी, सिद्धार्थनगर"},{"code":903,"name":"पीपुल्स इन्टर कालेज, डुमरियागंज, सिद्धार्थनगर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, डुमरियागंज, सिद्धार्थनगर"}],
+  "सीतापुर (Sitapur)": [{"code":901,"name":"राजकीय इन्टर कालेज, सीतापुर"},{"code":902,"name":"गांधी इन्टर कालेज, सिधौली, सीतापुर"},{"code":903,"name":"एच.आर.डी. इन्टर कालेज, बिस्वां, सीतापुर"},{"code":904,"name":"काल्विन इन्टर कालेज, महमूदाबाद, सीतापुर"},{"code":905,"name":"एम.डी. इन्टर कालेज, मिश्रिख, सीतापुर"},{"code":951,"name":"हिन्दू कन्या पाठशाला इन्टर कालेज, सीतापुर"}],
+  "सुल्तानपुर (Sultanpur)": [{"code":901,"name":"राजकीय इन्टर कालेज, सुल्तानपुर"},{"code":902,"name":"नेशनल इन्टर कालेज, कादीपुर, सुल्तानपुर"},{"code":903,"name":"सर्वोदय इन्टर कालेज, लम्भुआ, सुल्तानपुर"},{"code":951,"name":"केश कुमारी राजकीय बालिका इन्टर कालेज, सुल्तानपुर"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, कादीपुर, सुल्तानपुर"}],
+  "सोनभद्र (Sonbhadra)": [{"code":901,"name":"राजा शारदा महेश इन्टर कालेज, राबर्ट्सगंज, सोनभद्र"},{"code":902,"name":"राजकीय इन्टर कालेज, घोरावल, सोनभद्र"},{"code":903,"name":"ओबरा इन्टर कालेज, ओबरा, सोनभद्र"},{"code":904,"name":"राजकीय इन्टर कालेज, दुद्धी, सोनभद्र"},{"code":905,"name":"राजकीय इन्टर कालेज, पिपरी, सोनभद्र"}],
+  "हमीरपुर (Hamirpur)": [{"code":901,"name":"राजकीय इन्टर कालेज, हमीरपुर"},{"code":902,"name":"ब्रहानन्द इन्टर कालेज, राठ, हमीरपुर"},{"code":903,"name":"नेशनल इन्टर कालेज, मौदहा, हमीरपुर"},{"code":951,"name":"राजकीय बालिका इन्टर कालेज, हमीरपुर"},{"code":952,"name":"राजकीय बालिका इन्टर कालेज, राठ, हमीरपुर"},{"code":953,"name":"राजकीय बालिका इन्टर कालेज, मौदहा, हमीरपुर"}],
+  "हरदोई (Hardoi)": [{"code":901,"name":"राजकीय इन्टर कालेज, हरदोई"},{"code":902,"name":"बाबा मंशानाथ इन्टर कालेज, बिलग्राम, हरदोई"},{"code":903,"name":"बसन्त लाल इन्टर कालेज, शाहाबाद, हरदोई"},{"code":904,"name":"भगवान बुद्ध इन्टर कालेज, सण्डीला, हरदोई"},{"code":951,"name":"वेणी माधव कन्या इन्टर कालेज, हरदोई"}],
+  "हाथरस (Hathras)": [{"code":901,"name":"सरस्वती इण्टर कालेज, हाथरस"},{"code":902,"name":"जी.एस.हिन्दू इण्टर कालेज, सिकन्दराराऊ, हाथरस"},{"code":903,"name":"सादाबाद इण्टर कालेज, सादाबाद, हाथरस"},{"code":951,"name":"आर्य कन्या इण्टर कालेज, सिकन्दराराऊ, हाथरस"}],
+  "हापुड़ (Hapur)": [{"code":901,"name":"दीवान इण्टर कालेज, हापुड़, हापुड़"},{"code":902,"name":"मारवाड़ इण्टर कालेज, पिलखुवा, हापुड़"}]
 };
 
-window.onload = function() {
+// ── Apps Script Web App URL (update after redeployment if needed) ──
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvjUkjWtJrqUizCYclbY5C2xA66RZo03gAsnhq2TYn4-Qm9RtMS0UbJIsk9uDueYZfUg/exec';
+
+// ── Populate Districts ──
+(function() {
   var sel = document.getElementById('district');
   Object.keys(CENTRES_DATA).sort().forEach(function(d) {
     var opt = document.createElement('option');
     opt.value = d; opt.textContent = d;
     sel.appendChild(opt);
   });
-};
+})();
 
-// ── Load centres for selected district ──
-function loadCentres() {
-  var district = document.getElementById('district').value;
+// ── District → Centre cascade ──
+document.getElementById('district').addEventListener('change', function() {
   var centreSel = document.getElementById('centre');
+  var codeField = document.getElementById('centreCode');
   centreSel.innerHTML = '<option value="">-- Select Centre --</option>';
-  document.getElementById('centreCode').value = '';
-  if (!district) return;
-  (CENTRES_DATA[district] || []).forEach(function(c) {
+  codeField.value = '';
+  centreSel.disabled = true;
+
+  var dist = this.value;
+  if (!dist) return;
+  var centres = CENTRES_DATA[dist] || [];
+  centres.forEach(function(c) {
     var opt = document.createElement('option');
     opt.value = c.name;
     opt.dataset.code = c.code;
-    opt.textContent = c.code + ' — ' + c.name;
+    opt.textContent = c.name;
     centreSel.appendChild(opt);
   });
-}
+  centreSel.disabled = false;
+});
 
-function setCentreCode() {
-  var sel = document.getElementById('centre');
-  var opt = sel.options[sel.selectedIndex];
-  document.getElementById('centreCode').value = opt ? (opt.dataset.code || '') : '';
-}
-
-// ── Load subjects based on stream ──
-function loadSubjects() {
-  var stream = document.getElementById('stream').value;
-  var container = document.getElementById('subjectSelectors');
-  container.innerHTML = '';
-  if (!stream) return;
-
-  var subs = SUBJECTS[stream] || [];
-  var infoEl = document.getElementById('subjectInfo');
-  var labelEl = document.getElementById('electiveLabel');
-
-  var numElectives = stream === 'Science' ? 3 : (stream === 'Commerce' ? 2 : 4);
-  var compLabel = stream === 'Commerce' ? 'Commerce has 2 additional compulsory subjects: Accountancy (156) + Business Studies (157)' : '';
-
-  infoEl.innerHTML = '📌 <b>' + stream + '</b>: Select <b>' + numElectives + ' elective subject(s)</b>' + (compLabel ? ' | ' + compLabel : '');
-  labelEl.textContent = 'Elective Subjects — Choose ' + numElectives;
-
-  for (var i = 1; i <= numElectives; i++) {
-    var div = document.createElement('div');
-    div.className = 'subject-item';
-    div.innerHTML = '<label>Subject ' + i + '</label>';
-    var sel = document.createElement('select');
-    sel.id = 'elective' + i;
-    sel.innerHTML = '<option value="">-- Select --</option>';
-    subs.forEach(function(s) {
-      var opt = document.createElement('option');
-      opt.value = s.name + ' (' + s.code + ')';
-      opt.textContent = s.name + ' (' + s.code + ')';
-      sel.appendChild(opt);
-    });
-    div.appendChild(sel);
-    container.appendChild(div);
-  }
-
-  // Commerce: add fixed compulsory
-  if (stream === 'Commerce') {
-    var el1 = document.getElementById('elective1');
-    if (el1) {
-      var optAcc = document.createElement('option');
-      optAcc.value = 'Accountancy (156)'; optAcc.textContent = 'Accountancy (156)';
-      el1.insertBefore(optAcc, el1.options[1]);
-    }
-  }
-}
-
-// ── Update fee ──
-function updateFee() {
-  var cls = document.getElementById('classYear').value;
-  var stream = document.getElementById('stream').value;
-  var cat = document.getElementById('category').value;
-  var el = document.getElementById('feeDisplay');
-  var breakdown = document.getElementById('feeBreakdown');
-  if (!cls || !stream || !cat) { el.textContent = '₹ —'; breakdown.textContent = ''; return; }
-  var fee = FEE_TABLE[cls] && FEE_TABLE[cls][stream] && FEE_TABLE[cls][stream][cat];
-  if (fee) {
-    el.textContent = '₹ ' + fee.toLocaleString('en-IN');
-    breakdown.textContent = cls + ' | ' + stream + ' | ' + cat;
-    document.getElementById('feeAmount').value = fee;
-  }
-}
-
-// ── Aadhaar formatter ──
-function formatAadhaar(el) {
-  var v = el.value.replace(/\D/g, '').substring(0, 12);
-  el.value = v.replace(/(\d{4})(\d{0,4})(\d{0,4})/, function(m,a,b,c) {
-    return b ? a+' '+b+(c?' '+c:'') : a;
-  });
-}
-
-// ── Section navigation ──
-function nextSection(current) {
-  if (!validateSection(current)) return;
-  showSection(current + 1);
-  if (current + 1 === 5) buildReview();
-}
-function prevSection(current) { showSection(current - 1); }
-
-function showSection(n) {
-  for (var i = 1; i <= 5; i++) {
-    document.getElementById('sec' + i).classList.remove('active');
-    document.getElementById('step' + i).classList.remove('active', 'done');
-  }
-  document.getElementById('sec' + n).classList.add('active');
-  document.getElementById('step' + n).classList.add('active');
-  for (var j = 1; j < n; j++) document.getElementById('step' + j).classList.add('done');
-  currentSection = n;
-  window.scrollTo(0, 0);
-}
+// ── Centre → Code auto-fill ──
+document.getElementById('centre').addEventListener('change', function() {
+  var sel = this.options[this.selectedIndex];
+  document.getElementById('centreCode').value = sel.dataset.code || '';
+});
 
 // ── Validation ──
-function validateSection(n) {
-  var alertEl = document.getElementById('alert' + n);
-  alertEl.className = 'alert';
-  var errors = [];
+function validate() {
+  var ok = true;
 
-  if (n === 1) {
-    if (!document.getElementById('district').value) errors.push('Please select a District.');
-    if (!document.getElementById('centre').value) errors.push('Please select a Registration Centre.');
-    if (!document.getElementById('classYear').value) errors.push('Please select Class.');
-    if (!document.getElementById('stream').value) errors.push('Please select Stream.');
-    if (!document.getElementById('category').value) errors.push('Please select Category.');
-  }
-  if (n === 2) {
-    if (!document.getElementById('firstName').value.trim()) errors.push('First Name is required.');
-    if (!document.getElementById('lastName').value.trim()) errors.push('Last Name is required.');
-    if (!document.getElementById('fatherName').value.trim()) errors.push("Father's Name is required.");
-    if (!document.getElementById('motherName').value.trim()) errors.push("Mother's Name is required.");
-    if (!document.getElementById('dob').value) errors.push('Date of Birth is required.');
-    if (!document.getElementById('gender').value) errors.push('Gender is required.');
-    var aadh = document.getElementById('aadhaar').value.replace(/\s/g,'');
-    if (aadh.length !== 12) errors.push('Aadhaar must be 12 digits.');
-    var mob = document.getElementById('mobile').value;
-    if (!/^\d{10}$/.test(mob)) errors.push('Mobile number must be 10 digits.');
-    if (!document.getElementById('prevExam').value) errors.push('Previous exam is required.');
-    if (!document.getElementById('prevYear').value) errors.push('Previous year is required.');
-    if (!document.getElementById('prevBoard').value) errors.push('Previous board is required.');
-  }
-  if (n === 3) {
-    if (!document.getElementById('address').value.trim()) errors.push('Address is required.');
-    if (!document.getElementById('village').value.trim()) errors.push('Village/Town is required.');
-    if (!document.getElementById('post').value.trim()) errors.push('Post Office is required.');
-    if (!document.getElementById('resDistrict').value.trim()) errors.push('Residence District is required.');
-    var pin = document.getElementById('pinCode').value;
-    if (!/^\d{6}$/.test(pin)) errors.push('Pin Code must be 6 digits.');
-  }
-  if (n === 4) {
-    var stream = document.getElementById('stream').value;
-    var needed = stream === 'Science' ? 3 : (stream === 'Commerce' ? 2 : 4);
-    var filled = 0;
-    for (var i = 1; i <= needed; i++) {
-      var el = document.getElementById('elective' + i);
-      if (el && el.value) filled++;
-    }
-    if (filled < needed) errors.push('Please select all ' + needed + ' elective subjects.');
-  }
-  if (n === 5) {
-    if (!document.getElementById('challanNo').value.trim()) errors.push('Challan Number is required.');
-    if (!document.getElementById('challanDate').value) errors.push('Challan Date is required.');
-    if (!document.getElementById('bankName').value.trim()) errors.push('Bank/Treasury Name is required.');
-    if (!document.getElementById('feeAmount').value) errors.push('Fee Amount is required.');
+  function check(id, errId, testFn) {
+    var el = document.getElementById(id);
+    var err = document.getElementById(errId);
+    var val = el ? el.value.trim() : '';
+    var pass = testFn ? testFn(val) : val !== '';
+    if (el) el.classList.toggle('error', !pass);
+    if (err) err.style.display = pass ? 'none' : 'block';
+    if (!pass) ok = false;
   }
 
-  if (errors.length > 0) {
-    alertEl.className = 'alert error';
-    alertEl.textContent = errors.join(' | ');
-    return false;
-  }
-  return true;
+  check('district',      'err-district',      null);
+  check('centre',        'err-centre',        null);
+  check('classYear',     'err-classYear',     null);
+  check('stream',        'err-stream',        null);
+  check('category',      'err-category',      null);
+  check('studentName',   'err-studentName',   null);
+  check('fatherName',    'err-fatherName',    null);
+  check('motherName',    'err-motherName',    null);
+  check('dob',           'err-dob',           null);
+  check('aadhaar',       'err-aadhaar',       function(v){ return /^\d{12}$/.test(v); });
+  check('mobile',        'err-mobile',        function(v){ return /^\d{10}$/.test(v); });
+  check('prevExam',      'err-prevExam',      null);
+  check('prevYear',      'err-prevYear',      function(v){ return /^\d{4}$/.test(v) && +v >= 1980 && +v <= 2026; });
+  check('prevBoard',     'err-prevBoard',     null);
+  check('feesSubmitted', 'err-feesSubmitted', function(v){ return v !== '' && +v >= 0; });
+
+  // Gender radio
+  var gender = document.querySelector('input[name="gender"]:checked');
+  var gErr = document.getElementById('err-gender');
+  if (!gender) { gErr.style.display = 'block'; ok = false; }
+  else          { gErr.style.display = 'none'; }
+
+  return ok;
 }
 
-// ── Build review summary ──
-function buildReview() {
-  var stream = document.getElementById('stream').value;
-  var needed = stream === 'Science' ? 3 : (stream === 'Commerce' ? 2 : 4);
-  var subjects = [];
-  for (var i = 1; i <= needed; i++) {
-    var el = document.getElementById('elective' + i);
-    if (el && el.value) subjects.push(el.value);
-  }
-
-  var html = [
-    ['Student Name', (document.getElementById('firstName').value + ' ' + (document.getElementById('middleName').value || '') + ' ' + document.getElementById('lastName').value).replace(/\s+/,' ').trim()],
-    ['District', document.getElementById('district').value],
-    ['Centre', document.getElementById('centre').value],
-    ['Class', document.getElementById('classYear').value],
-    ['Stream', document.getElementById('stream').value],
-    ['Category', document.getElementById('category').value],
-    ['Subjects', 'Hindi/General Hindi (101/102), Moral/Yoga/PE (110), ' + subjects.join(', ')],
-    ['Fee', '₹ ' + document.getElementById('feeAmount').value],
-  ].map(function(r) {
-    return '<span style="color:#1F4E79; font-weight:700;">' + r[0] + ':</span> ' + r[1];
-  }).join('<br>');
-
-  document.getElementById('reviewSummary').innerHTML = html;
+// ── Toast helper ──
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = type;
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 4000);
 }
 
-// ── Submit form ──
-function submitForm() {
-  if (!validateSection(5)) return;
-
-  var stream = document.getElementById('stream').value;
-  var needed = stream === 'Science' ? 3 : (stream === 'Commerce' ? 2 : 4);
-  var subjects = [];
-  for (var i = 1; i <= needed; i++) {
-    var el = document.getElementById('elective' + i);
-    subjects.push(el ? el.value : '');
+// ── Form submit ──
+document.getElementById('regForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!validate()) {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    showToast('Please fill all required fields correctly.', 'error');
+    return;
   }
 
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  var gender = document.querySelector('input[name="gender"]:checked');
   var data = {
-    district:     document.getElementById('district').value,
-    centreCode:   document.getElementById('centreCode').value,
-    centreName:   document.getElementById('centre').value,
-    classYear:    document.getElementById('classYear').value,
-    stream:       document.getElementById('stream').value,
-    category:     document.getElementById('category').value,
-    studentName:  (document.getElementById('firstName').value + ' ' + (document.getElementById('middleName').value||'') + ' ' + document.getElementById('lastName').value).replace(/\s+/,' ').trim(),
-    fatherName:   document.getElementById('fatherName').value,
-    motherName:   document.getElementById('motherName').value,
-    dob:          document.getElementById('dob').value,
-    aadhaar:      document.getElementById('aadhaar').value.replace(/\s/g,''),
-    mobile:       document.getElementById('mobile').value,
-    gender:       document.getElementById('gender').value,
-    address:      document.getElementById('address').value,
-    village:      document.getElementById('village').value,
-    post:         document.getElementById('post').value,
-    resDistrict:  document.getElementById('resDistrict').value,
-    pinCode:      document.getElementById('pinCode').value,
-    subject1:     subjects[0] || '',
-    subject2:     subjects[1] || '',
-    subject3:     subjects[2] || '',
-    subject4:     subjects[3] || '',
-    subject5:     'Hindi/General Hindi (101/102)',
-    prevExam:     document.getElementById('prevExam').value,
-    prevYear:     document.getElementById('prevYear').value,
-    prevBoard:    document.getElementById('prevBoard').value,
-    feeAmount:    document.getElementById('feeAmount').value,
-    challanNo:    document.getElementById('challanNo').value,
-    challanDate:  document.getElementById('challanDate').value,
-    bankName:     document.getElementById('bankName').value,
-    submittedBy:  ''
+    district:      document.getElementById('district').value,
+    centreName:    document.getElementById('centre').value,
+    centreCode:    document.getElementById('centreCode').value,
+    classYear:     document.getElementById('classYear').value,
+    stream:        document.getElementById('stream').value,
+    category:      document.getElementById('category').value,
+    studentName:   document.getElementById('studentName').value.trim(),
+    fatherName:    document.getElementById('fatherName').value.trim(),
+    motherName:    document.getElementById('motherName').value.trim(),
+    dob:           document.getElementById('dob').value,
+    gender:        gender ? gender.value : '',
+    aadhaar:       document.getElementById('aadhaar').value.trim(),
+    mobile:        document.getElementById('mobile').value.trim(),
+    prevExam:      document.getElementById('prevExam').value,
+    prevYear:      document.getElementById('prevYear').value,
+    prevBoard:     document.getElementById('prevBoard').value.trim(),
+    feesSubmitted: document.getElementById('feesSubmitted').value
   };
 
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZhmxWV-J2bkm9FlPIgkTczbH5bpTm8lD5Djhxdkqv2lWaibXevruyzZ7Wx4ivGq8ijA/exec';
-
-  document.getElementById('loader').classList.add('active');
-  document.getElementById('submitBtn').disabled = true;
-
-  function showSuccess(regNo) {
-    document.getElementById('regNoDisplay').textContent = regNo;
-    for (var i = 1; i <= 5; i++) document.getElementById('sec' + i).classList.remove('active');
-    document.getElementById('secSuccess').classList.add('active');
-    for (var j = 1; j <= 5; j++) { document.getElementById('step' + j).classList.remove('active'); document.getElementById('step' + j).classList.add('done'); }
-    window.scrollTo(0, 0);
+  // Try google.script.run first (Apps Script context), else fetch (GitHub Pages)
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.disabled = false; btn.textContent = 'Submit Registration';
+        if (res && res.success) {
+          showToast('Registration submitted successfully!', 'success');
+          document.getElementById('regForm').reset();
+          document.getElementById('centre').innerHTML = '<option value="">-- Select Centre --</option>';
+          document.getElementById('centre').disabled = true;
+          document.getElementById('centreCode').value = '';
+        } else {
+          showToast('Error: ' + (res ? res.error : 'Unknown error'), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false; btn.textContent = 'Submit Registration';
+        showToast('Submission failed: ' + err.message, 'error');
+      })
+      .submitForm(data);
+  } else {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      btn.disabled = false; btn.textContent = 'Submit Registration';
+      if (res && res.success) {
+        showToast('Registration submitted successfully!', 'success');
+        document.getElementById('regForm').reset();
+        document.getElementById('centre').innerHTML = '<option value="">-- Select Centre --</option>';
+        document.getElementById('centre').disabled = true;
+        document.getElementById('centreCode').value = '';
+      } else {
+        showToast('Error: ' + (res ? res.error : 'Unknown error'), 'error');
+      }
+    })
+    .catch(function(err) {
+      btn.disabled = false; btn.textContent = 'Submit Registration';
+      showToast('Network error. Please try again.', 'error');
+    });
   }
-
-  function showError(msg) {
-    document.getElementById('loader').classList.remove('active');
-    document.getElementById('alert5').className = 'alert error';
-    document.getElementById('alert5').textContent = msg;
-    document.getElementById('submitBtn').disabled = false;
-  }
-
-  function generateRegNo(district) {
-    var match = district.match(/\((\w+)\)/);
-    var code = match ? match[1].substring(0,3).toUpperCase() : 'PAT';
-    return 'PAT-' + code + '-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
-  }
-
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(data)
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(result) {
-    document.getElementById('loader').classList.remove('active');
-    if (result.success) { showSuccess(result.regNo); }
-    else { showError('Error: ' + result.error); }
-  })
-  .catch(function() {
-    document.getElementById('loader').classList.remove('active');
-    var regNo = generateRegNo(data.district);
-    fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(data), mode: 'no-cors' }).catch(function(){});
-    showSuccess(regNo);
-  });
-}
-
-function newRegistration() { location.reload(); }
+});
 </script>
 </body>
 </html>
