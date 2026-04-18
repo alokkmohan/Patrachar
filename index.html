@@ -262,10 +262,7 @@
           <div class="form-group">
             <label>उत्तीर्ण परीक्षा</label>
             <select id="prevExam">
-              <option value="">-- परीक्षा चुनें --</option>
-              <option value="High School (Class 10)">हाई स्कूल (कक्षा 10)</option>
-              <option value="Intermediate (Class 12)">इंटरमीडिएट (कक्षा 12)</option>
-              <option value="Other">अन्य</option>
+              <option value="">-- पहले कक्षा चुनें --</option>
             </select>
           </div>
           <div class="form-group">
@@ -422,6 +419,28 @@ document.getElementById('district').addEventListener('change', function() {
 document.getElementById('centre').addEventListener('change', function() {
   var sel = this.options[this.selectedIndex];
   document.getElementById('centreCode').value = sel.dataset.code || '';
+});
+
+// ── Class → Prev Exam cascade ──
+document.getElementById('classYear').addEventListener('change', function() {
+  var prevExam = document.getElementById('prevExam');
+  var cls = this.value;
+  prevExam.innerHTML = '';
+
+  if (cls === 'Class 11') {
+    prevExam.innerHTML =
+      '<option value="">-- परीक्षा चुनें --</option>' +
+      '<option value="High School (Class 10)">हाई स्कूल (कक्षा 10)</option>';
+    prevExam.value = 'High School (Class 10)'; // auto-select
+  } else if (cls === 'Class 12') {
+    prevExam.innerHTML =
+      '<option value="">-- परीक्षा चुनें --</option>' +
+      '<option value="Intermediate (Class 11)">इंटरमीडिएट (कक्षा 11)</option>';
+    prevExam.value = 'Intermediate (Class 11)'; // auto-select
+  } else {
+    prevExam.innerHTML =
+      '<option value="">-- पहले कक्षा चुनें --</option>';
+  }
 });
 
 // ── Validation ──
