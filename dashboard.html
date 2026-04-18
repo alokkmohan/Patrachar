@@ -159,6 +159,9 @@ body {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px; margin-bottom: 20px;
 }
+.perf-alerts-row.districts-row {
+  grid-template-columns: 1fr 1fr;
+}
 .perf-card, .alert-card {
   background: var(--card); border-radius: 10px;
   padding: 18px; box-shadow: var(--shadow);
@@ -445,6 +448,17 @@ tbody td { padding: 10px 14px; }
       <div class="alert-card">
         <h3>🔔 अलर्ट</h3>
         <div id="alertsList"><div class="no-data">कोई अलर्ट नहीं</div></div>
+      </div>
+    </div>
+
+    <div class="perf-alerts-row districts-row">
+      <div class="perf-card">
+        <h3>🏆 शीर्ष 5 जिले</h3>
+        <div id="topDistrictList"><div class="no-data">डेटा नहीं</div></div>
+      </div>
+      <div class="perf-card">
+        <h3>📉 निम्न 5 जिले</h3>
+        <div id="bottomDistrictList"><div class="no-data">डेटा नहीं</div></div>
       </div>
     </div>
 
@@ -910,42 +924,99 @@ function renderGenderChart() {
 // PERFORMANCE — Top 5 / Bottom 5
 // ════════════════════════════════════════════
 function renderPerformance() {
-  // Build centre stats
-  var centreMap = {};
-  filteredData.forEach(function(r) {
-    var key = r['Centre Name'] || 'अज्ञात';
-    if (!centreMap[key]) centreMap[key] = { name: key, district: r['District'] || '', total: 0 };
-    centreMap[key].total++;
+  var centres = aggregatePerformanceList(filteredData, function(r) {
+    return r['Centre Name'] || 'अज्ञात';
+  }, function(r) {
+    return r['District'] || '';
   });
-  var centres = Object.values(centreMap).sort(function(a,b){ return b.total - a.total; });
 
-  if (!centres.length) {
-    document.getElementById('top5List').innerHTML = '<div class="no-data">डेटा नहीं</div>';
-    document.getElementById('bottom5List').innerHTML = '<div class="no-data">डेटा नहीं</div>';
+  renderRankingPair('top5List', 'bottom5List', centres, {
+    maxNameLength: 28,
+    topMeta: function(item) { return item.meta; },
+    bottomMeta: function(item) { return item.meta; }
+  });
+
+  var districts = aggregatePerformanceList(filteredData, function(r) {
+    return r['District'] || 'अज्ञात';
+  }, function(r) {
+    return r['Centre Name'] || '';
+  });
+
+  renderRankingPair('topDistrictList', 'bottomDistrictList', districts, {
+    maxNameLength: 32,
+    topMeta: function(item) {
+      return item.metaCount + ' सक्रिय केंद्र';
+    },
+    bottomMeta: function(item) {
+      return item.metaCount + ' सक्रिय केंद्र';
+    }
+  });
+}
+
+function aggregatePerformanceList(data, nameGetter, metaGetter) {
+  var itemMap = {};
+
+  data.forEach(function(r) {
+    var key = nameGetter(r) || 'अज्ञात';
+    if (!itemMap[key]) {
+      itemMap[key] = {
+        name: key,
+        meta: '',
+        total: 0,
+        metaSet: {}
+      };
+    }
+
+    itemMap[key].total++;
+
+    var metaValue = metaGetter(r) || '';
+    if (metaValue && !itemMap[key].metaSet[metaValue]) {
+      itemMap[key].metaSet[metaValue] = true;
+    }
+  });
+
+  return Object.values(itemMap).map(function(item) {
+    var metaKeys = Object.keys(item.metaSet);
+    item.meta = metaKeys[0] || '';
+    item.metaCount = metaKeys.length;
+    delete item.metaSet;
+    return item;
+  }).sort(function(a, b) {
+    return b.total - a.total || a.name.localeCompare(b.name, 'hi');
+  });
+}
+
+function renderRankingPair(topId, bottomId, items, options) {
+  if (!items.length) {
+    document.getElementById(topId).innerHTML = '<div class="no-data">डेटा नहीं</div>';
+    document.getElementById(bottomId).innerHTML = '<div class="no-data">डेटा नहीं</div>';
     return;
   }
 
-  var maxCount = centres[0].total;
-  var top5    = centres.slice(0, 5);
-  var bottom5 = centres.slice(-5).reverse();
+  var topItems = items.slice(0, 5);
+  var bottomItems = items.slice(-5).reverse();
+  var maxCount = items[0].total || 1;
 
-  document.getElementById('top5List').innerHTML = top5.map(function(c, i) {
-    var pct = Math.round((c.total / maxCount) * 100);
-    return '<div class="perf-row">' +
-      '<div class="perf-rank">' + (i+1) + '</div>' +
-      '<div class="perf-name">' + truncate(c.name, 28) + '<small>' + c.district + '</small></div>' +
-      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%"></div></div></div>' +
-      '<div class="perf-count">' + c.total + '</div>' +
-      '</div>';
-  }).join('');
+  document.getElementById(topId).innerHTML = renderRankingList(topItems, maxCount, false, options);
+  document.getElementById(bottomId).innerHTML = renderRankingList(bottomItems, maxCount, true, options);
+}
 
-  document.getElementById('bottom5List').innerHTML = bottom5.map(function(c, i) {
-    var pct = Math.round((c.total / maxCount) * 100);
+function renderRankingList(items, maxCount, isBottom, options) {
+  return items.map(function(item, i) {
+    var pct = Math.max(8, Math.round((item.total / maxCount) * 100));
+    var meta = isBottom
+      ? (options.bottomMeta ? options.bottomMeta(item) : item.meta)
+      : (options.topMeta ? options.topMeta(item) : item.meta);
+    var rankStyle = isBottom ? ' style="background:var(--red)"' : '';
+    var barStyle = isBottom ? ';background:var(--red)' : '';
+    var countStyle = isBottom ? ' style="color:var(--red)"' : '';
+
     return '<div class="perf-row">' +
-      '<div class="perf-rank" style="background:var(--red)">' + (i+1) + '</div>' +
-      '<div class="perf-name">' + truncate(c.name, 28) + '<small>' + c.district + '</small></div>' +
-      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%;background:var(--red)"></div></div></div>' +
-      '<div class="perf-count" style="color:var(--red)">' + c.total + '</div>' +
+      '<div class="perf-rank"' + rankStyle + '>' + (i+1) + '</div>' +
+      '<div class="perf-name">' + truncate(item.name, options.maxNameLength || 28) +
+        (meta ? '<small>' + meta + '</small>' : '') + '</div>' +
+      '<div><div class="perf-bar-wrap"><div class="perf-bar" style="width:' + pct + '%' + barStyle + '"></div></div></div>' +
+      '<div class="perf-count"' + countStyle + '>' + item.total + '</div>' +
       '</div>';
   }).join('');
 }
