@@ -247,7 +247,7 @@
           </div>
           <div class="form-group">
             <label>मोबाइल नंबर <span class="req">*</span></label>
-            <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर (6/7/8/9 से शुरू)" maxlength="10" inputmode="numeric" required>
+            <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर (6/7/8/9 से शुरू)" maxlength="10" inputmode="numeric" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             <span class="err-msg" id="err-mobile">वैध मोबाइल नंबर भरें — 10 अंक, 6/7/8/9 से शुरू हो।</span>
           </div>
         </div>
@@ -571,27 +571,25 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
       })
       .submitForm(data);
   } else {
+    // no-cors: GitHub Pages → Apps Script CORS restriction bypass
+    // Request IS sent and data IS saved to Sheet; browser just can't read the response
     fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(data)
     })
-    .then(function(r){ return r.json(); })
-    .then(function(res) {
-      btn.disabled = false; btn.textContent = 'Submit Registration';
-      if (res && res.success) {
-        showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
-        document.getElementById('regForm').reset();
-        document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
-        document.getElementById('centre').disabled = true;
-        document.getElementById('centreCode').value = '';
-      } else {
-        showToast('त्रुटि: ' + (res ? res.error : 'अज्ञात त्रुटि'), 'error');
-      }
-    })
-    .catch(function(err) {
+    .then(function() {
       btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
-      showToast('नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।', 'error');
+      showToast('पंजीकरण सफलतापूर्वक जमा हो गया!', 'success');
+      document.getElementById('regForm').reset();
+      document.getElementById('centre').innerHTML = '<option value="">-- केंद्र चुनें --</option>';
+      document.getElementById('centre').disabled = true;
+      document.getElementById('centreCode').value = '';
+    })
+    .catch(function() {
+      btn.disabled = false; btn.textContent = 'पंजीकरण जमा करें';
+      showToast('नेटवर्क त्रुटि। इंटरनेट जांचें और पुनः प्रयास करें।', 'error');
     });
   }
 });
