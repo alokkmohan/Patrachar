@@ -219,6 +219,8 @@
             <label>कक्षा <span class="req">*</span></label>
             <select id="classYear" required>
               <option value="">-- कक्षा चुनें --</option>
+              <option value="Class 9">कक्षा 9</option>
+              <option value="Class 10">कक्षा 10</option>
               <option value="Class 11">कक्षा 11 (दो वर्षीय)</option>
               <option value="Class 12">कक्षा 12 (एक वर्षीय)</option>
             </select>
@@ -493,16 +495,26 @@ document.getElementById('classYear').addEventListener('change', function() {
   var cls = this.value;
   prevExam.innerHTML = '';
 
-  if (cls === 'Class 11') {
+  if (cls === 'Class 9') {
+    prevExam.innerHTML =
+      '<option value="">-- परीक्षा चुनें --</option>' +
+      '<option value="Middle School (Class 8)">मिडिल स्कूल (कक्षा 8)</option>';
+    prevExam.value = 'Middle School (Class 8)';
+  } else if (cls === 'Class 10') {
+    prevExam.innerHTML =
+      '<option value="">-- परीक्षा चुनें --</option>' +
+      '<option value="High School Part 1 (Class 9)">हाई स्कूल भाग 1 (कक्षा 9)</option>';
+    prevExam.value = 'High School Part 1 (Class 9)';
+  } else if (cls === 'Class 11') {
     prevExam.innerHTML =
       '<option value="">-- परीक्षा चुनें --</option>' +
       '<option value="High School (Class 10)">हाई स्कूल (कक्षा 10)</option>';
-    prevExam.value = 'High School (Class 10)'; // auto-select
+    prevExam.value = 'High School (Class 10)';
   } else if (cls === 'Class 12') {
     prevExam.innerHTML =
       '<option value="">-- परीक्षा चुनें --</option>' +
       '<option value="Intermediate (Class 11)">इंटरमीडिएट (कक्षा 11)</option>';
-    prevExam.value = 'Intermediate (Class 11)'; // auto-select
+    prevExam.value = 'Intermediate (Class 11)';
   } else {
     prevExam.innerHTML =
       '<option value="">-- पहले कक्षा चुनें --</option>';
