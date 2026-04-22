@@ -415,6 +415,38 @@ tbody td { padding: 10px 14px; }
       </div>
     </div>
 
+    <!-- Class-wise KPIs -->
+    <div class="kpi-grid" style="margin-top:12px;">
+      <div class="kpi-card" style="border-left-color:#8e44ad;">
+        <div class="kpi-icon" style="background:#f5eef8;">🔢</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiClass9">—</div>
+          <div class="kpi-label">कक्षा 9</div>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-left-color:#e74c3c;">
+        <div class="kpi-icon" style="background:#fdf2f2;">🔢</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiClass10">—</div>
+          <div class="kpi-label">कक्षा 10</div>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-left-color:#2E75B6;">
+        <div class="kpi-icon" style="background:#e8f0fe;">🔢</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiClass11">—</div>
+          <div class="kpi-label">कक्षा 11</div>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-left-color:#27ae60;">
+        <div class="kpi-icon" style="background:#e8f8f0;">🔢</div>
+        <div class="kpi-body">
+          <div class="kpi-value" id="kpiClass12">—</div>
+          <div class="kpi-label">कक्षा 12</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Charts -->
     <div class="charts-row">
       <div class="chart-card">
@@ -812,15 +844,24 @@ function renderAll() {
 // KPIs
 // ════════════════════════════════════════════
 function renderKPIs() {
-  var total       = filteredData.length;
-  var todayCount  = filteredData.filter(function(r){ return isToday(r._date); }).length;
+  var total         = filteredData.length;
+  var todayCount    = filteredData.filter(function(r){ return isToday(r._date); }).length;
   var activeCentres = new Set(filteredData.map(function(r){ return r['Centre Code'] + '|' + r['Centre Name']; })).size;
   var inactiveCount = Math.max(0, TOTAL_CENTRES - activeCentres);
+
+  var c9  = filteredData.filter(function(r){ return r['Class'] === 'Class 9';  }).length;
+  var c10 = filteredData.filter(function(r){ return r['Class'] === 'Class 10'; }).length;
+  var c11 = filteredData.filter(function(r){ return r['Class'] === 'Class 11'; }).length;
+  var c12 = filteredData.filter(function(r){ return r['Class'] === 'Class 12'; }).length;
 
   animateNumber('kpiTotal',    total);
   animateNumber('kpiToday',    todayCount);
   animateNumber('kpiActive',   activeCentres);
   animateNumber('kpiInactive', inactiveCount);
+  animateNumber('kpiClass9',   c9);
+  animateNumber('kpiClass10',  c10);
+  animateNumber('kpiClass11',  c11);
+  animateNumber('kpiClass12',  c12);
 }
 
 function animateNumber(id, target) {
