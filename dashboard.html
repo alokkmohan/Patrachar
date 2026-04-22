@@ -366,6 +366,8 @@ tbody td { padding: 10px 14px; }
       <label>कक्षा:</label>
       <select id="filterClass" onchange="applyFilters()">
         <option value="">सभी</option>
+        <option value="Class 9">कक्षा 9</option>
+        <option value="Class 10">कक्षा 10</option>
         <option value="Class 11">कक्षा 11</option>
         <option value="Class 12">कक्षा 12</option>
       </select>
@@ -465,6 +467,8 @@ tbody td { padding: 10px 14px; }
             <tr>
               <th class="sortable" onclick="sortTable('district')">जिला ↕</th>
               <th class="sortable" onclick="sortTable('name')">केंद्र नाम ↕</th>
+              <th class="sortable" onclick="sortTable('class9')">कक्षा 9 ↕</th>
+              <th class="sortable" onclick="sortTable('class10')">कक्षा 10 ↕</th>
               <th class="sortable" onclick="sortTable('class11')">कक्षा 11 ↕</th>
               <th class="sortable" onclick="sortTable('class12')">कक्षा 12 ↕</th>
               <th class="sortable" onclick="sortTable('total')">कुल ↕</th>
@@ -486,7 +490,7 @@ tbody td { padding: 10px 14px; }
       <table>
         <thead><tr>
           <th>जिला</th><th>केंद्र नाम</th>
-          <th>कक्षा 11</th><th>कक्षा 12</th>
+          <th>कक्षा 9</th><th>कक्षा 10</th><th>कक्षा 11</th><th>कक्षा 12</th>
           <th>कुल</th><th>आज</th><th>स्थिति</th>
         </tr></thead>
         <tbody id="printBody"></tbody>
@@ -735,7 +739,7 @@ function applyFilters() {
   // Update filter context label
   var parts = [];
   if (dist)   parts.push(dist);
-  if (cls)    parts.push(cls === 'Class 11' ? 'कक्षा 11' : 'कक्षा 12');
+  if (cls)    parts.push({'Class 9':'कक्षा 9','Class 10':'कक्षा 10','Class 11':'कक्षा 11','Class 12':'कक्षा 12'}[cls] || cls);
   if (gender) parts.push(gender === 'Male' ? 'पुरुष' : gender === 'Female' ? 'महिला' : 'अन्य');
   document.getElementById('filterContext').textContent =
     parts.length ? 'दिखाया जा रहा: ' + parts.join(' | ') : 'सभी जिले दिखाए जा रहे हैं';
@@ -882,7 +886,7 @@ function renderClassChart() {
   var keys = Object.keys(map);
   var data = Object.values(map);
   var labels = keys.map(function(l, i) {
-    var name = l === 'Class 11' ? 'कक्षा 11' : l === 'Class 12' ? 'कक्षा 12' : l;
+    var name = {'Class 9':'कक्षा 9','Class 10':'कक्षा 10','Class 11':'कक्षा 11','Class 12':'कक्षा 12'}[l] || l;
     return name + ' (' + data[i] + ')';
   });
 
@@ -891,7 +895,7 @@ function renderClassChart() {
     type: 'doughnut',
     data: {
       labels: labels,
-      datasets: [{ data: data, backgroundColor: ['#2E75B6','#27ae60','#f39c12'], borderWidth: 2 }]
+      datasets: [{ data: data, backgroundColor: ['#8e44ad','#e74c3c','#2E75B6','#27ae60'], borderWidth: 2 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -1091,7 +1095,7 @@ function buildCentreRows(search) {
     CENTRES_DATA[dist].forEach(function(c) {
       centreMap[c.name] = {
         name: c.name, district: dist,
-        class11: 0, class12: 0, total: 0, today: 0, hasAny: false
+        class9: 0, class10: 0, class11: 0, class12: 0, total: 0, today: 0, hasAny: false
       };
     });
   });
@@ -1101,17 +1105,19 @@ function buildCentreRows(search) {
     var key = r['Centre Name'] || '';
     if (!key) return;
     if (!centreMap[key]) {
-      // Centre not in master list — add anyway
       centreMap[key] = {
         name: key, district: r['District'] || '',
-        class11: 0, class12: 0, total: 0, today: 0, hasAny: false
+        class9: 0, class10: 0, class11: 0, class12: 0, total: 0, today: 0, hasAny: false
       };
     }
     var c = centreMap[key];
     c.total++;
     c.hasAny = true;
-    if ((r['Class'] || '').indexOf('11') !== -1) c.class11++;
-    else if ((r['Class'] || '').indexOf('12') !== -1) c.class12++;
+    var cls = r['Class'] || '';
+    if (cls === 'Class 9')       c.class9++;
+    else if (cls === 'Class 10') c.class10++;
+    else if (cls === 'Class 11') c.class11++;
+    else if (cls === 'Class 12') c.class12++;
     if (isToday(r._date)) c.today++;
   });
 
@@ -1142,7 +1148,7 @@ function renderTable() {
 
   if (!rows.length) {
     document.getElementById('tableBody').innerHTML =
-      '<tr><td colspan="7" class="no-data">कोई डेटा नहीं मिला</td></tr>';
+      '<tr><td colspan="9" class="no-data">कोई डेटा नहीं मिला</td></tr>';
     renderZeroTable(search);
     return;
   }
@@ -1156,6 +1162,8 @@ function renderTable() {
     return '<tr>' +
       '<td>' + r.name + '</td>' +
       '<td>' + r.district + '</td>' +
+      '<td>' + r.class9  + '</td>' +
+      '<td>' + r.class10 + '</td>' +
       '<td>' + r.class11 + '</td>' +
       '<td>' + r.class12 + '</td>' +
       '<td><strong>' + r.total + '</strong></td>' +
@@ -1232,7 +1240,7 @@ function downloadCSV() {
 
   var lines = [
     '\uFEFF' + // BOM for Excel Hindi support
-    'जिला,केंद्र का नाम,कक्षा 11,कक्षा 12,कुल,आज,स्थिति'
+    'जिला,केंद्र का नाम,कक्षा 9,कक्षा 10,कक्षा 11,कक्षा 12,कुल,आज,स्थिति'
   ];
 
   districtOrder.forEach(function(dist) {
@@ -1242,6 +1250,8 @@ function downloadCSV() {
       lines.push([
         '"' + dist + '"',
         '"' + r.name + '"',
+        r.class9,
+        r.class10,
         r.class11,
         r.class12,
         r.total,
@@ -1250,14 +1260,16 @@ function downloadCSV() {
       ].join(','));
     });
     // District subtotal row
+    var d9  = centreRows.reduce(function(s,r){ return s+r.class9;  }, 0);
+    var d10 = centreRows.reduce(function(s,r){ return s+r.class10; }, 0);
     var d11 = centreRows.reduce(function(s,r){ return s+r.class11; }, 0);
     var d12 = centreRows.reduce(function(s,r){ return s+r.class12; }, 0);
-    var dt  = centreRows.reduce(function(s,r){ return s+r.total; }, 0);
+    var dt  = centreRows.reduce(function(s,r){ return s+r.total;   }, 0);
     var dToday = centreRows.reduce(function(s,r){ return s+r.today; }, 0);
     lines.push([
       '"' + dist + ' — कुल योग"',
       '""',
-      d11, d12, dt, dToday, ''
+      d9, d10, d11, d12, dt, dToday, ''
     ].join(','));
     lines.push(''); // blank line between districts
   });
@@ -1294,7 +1306,7 @@ function downloadPDF() {
     '<table border="1" cellpadding="5" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:12px">' +
     '<thead><tr style="background:#1F4E79;color:white">' +
     '<th>#</th><th>जिला</th><th>केंद्र का नाम</th>' +
-    '<th>कक्षा 11</th><th>कक्षा 12</th><th>कुल</th><th>आज</th><th>स्थिति</th>' +
+    '<th>कक्षा 9</th><th>कक्षा 10</th><th>कक्षा 11</th><th>कक्षा 12</th><th>कुल</th><th>आज</th><th>स्थिति</th>' +
     '</tr></thead><tbody>';
 
   var sno = 1;
@@ -1306,6 +1318,8 @@ function downloadPDF() {
         '<td>' + (sno++) + '</td>' +
         '<td>' + dist + '</td>' +
         '<td>' + r.name + '</td>' +
+        '<td style="text-align:center">' + r.class9  + '</td>' +
+        '<td style="text-align:center">' + r.class10 + '</td>' +
         '<td style="text-align:center">' + r.class11 + '</td>' +
         '<td style="text-align:center">' + r.class12 + '</td>' +
         '<td style="text-align:center"><strong>' + r.total + '</strong></td>' +
@@ -1313,12 +1327,16 @@ function downloadPDF() {
         '<td style="text-align:center">' + status + '</td>' +
         '</tr>';
     });
+    var d9  = centreRows.reduce(function(s,r){ return s+r.class9;  }, 0);
+    var d10 = centreRows.reduce(function(s,r){ return s+r.class10; }, 0);
     var d11 = centreRows.reduce(function(s,r){ return s+r.class11; }, 0);
     var d12 = centreRows.reduce(function(s,r){ return s+r.class12; }, 0);
-    var dt  = centreRows.reduce(function(s,r){ return s+r.total; }, 0);
+    var dt  = centreRows.reduce(function(s,r){ return s+r.total;   }, 0);
     var dToday = centreRows.reduce(function(s,r){ return s+r.today; }, 0);
     html += '<tr style="background:#e8f0fe;font-weight:bold">' +
       '<td></td><td colspan="2">' + dist + ' — कुल योग</td>' +
+      '<td style="text-align:center">' + d9  + '</td>' +
+      '<td style="text-align:center">' + d10 + '</td>' +
       '<td style="text-align:center">' + d11 + '</td>' +
       '<td style="text-align:center">' + d12 + '</td>' +
       '<td style="text-align:center">' + dt + '</td>' +
