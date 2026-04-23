@@ -248,21 +248,22 @@
             <span class="err-msg" id="err-category">कृपया वर्ग चुनें।</span>
           </div>
           <div class="form-group span-2">
-            <label>छात्र / छात्रा का नाम <span class="req">*</span></label>
-            <input type="text" id="studentName" placeholder="दस्तावेज़ के अनुसार पूरा नाम" required>
+            <label>स्वयंपाठी का नाम <span class="req">*</span></label>
+            <input type="text" id="studentName" placeholder="आधार के अनुसार पूरा नाम" required>
             <span class="err-msg" id="err-studentName">कृपया सही नाम भरें (हिंदी या अंग्रेज़ी में, कम से कम 2 अक्षर)।</span>
           </div>
           <div class="form-group">
-            <label>पिता का नाम</label>
-            <input type="text" id="fatherName" placeholder="पिता का पूरा नाम">
+            <label>पिता का नाम <span class="req">*</span></label>
+            <input type="text" id="fatherName" placeholder="पिता का पूरा नाम" required>
+            <span class="err-msg" id="err-fatherName">कृपया पिता का नाम भरें।</span>
           </div>
           <div class="form-group">
             <label>माता का नाम</label>
             <input type="text" id="motherName" placeholder="माता का पूरा नाम">
           </div>
           <div class="form-group">
-            <label>जन्म तिथि</label>
-            <input type="date" id="dob">
+            <label>जन्म तिथि <span class="req">*</span></label>
+            <input type="date" id="dob" required>
             <span class="err-msg" id="err-dob">आयु कम से कम 14 वर्ष होनी चाहिए।</span>
           </div>
           <div class="form-group">
@@ -275,20 +276,79 @@
             <span class="err-msg" id="err-gender">कृपया लिंग चुनें।</span>
           </div>
           <div class="form-group">
-            <label>आधार संख्या</label>
-            <input type="text" id="aadhaar" placeholder="12 अंकों की आधार संख्या (वैकल्पिक)" maxlength="12" inputmode="numeric">
-            <span class="err-msg" id="err-aadhaar">यदि भरें तो 12 अंक होने चाहिए।</span>
+            <label>आधार संख्या <span class="req">*</span></label>
+            <input type="text" id="aadhaar" placeholder="12 अंकों की आधार संख्या" maxlength="12" inputmode="numeric" required>
+            <span class="err-msg" id="err-aadhaar">12 अंकों की आधार संख्या अनिवार्य है।</span>
           </div>
           <div class="form-group">
             <label>मोबाइल नंबर <span class="req">*</span></label>
             <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर (6/7/8/9 से शुरू)" maxlength="10" inputmode="numeric" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             <span class="err-msg" id="err-mobile">वैध मोबाइल नंबर भरें — 10 अंक, 6/7/8/9 से शुरू हो।</span>
           </div>
+          <div class="form-group">
+            <label>मेल आई.डी.</label>
+            <input type="email" id="email" placeholder="example@email.com">
+            <span class="err-msg" id="err-email">कृपया सही ईमेल पता भरें।</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 3: पूर्व योग्यता -->
+    <!-- SECTION 3: स्थायी पता -->
+    <div class="section">
+      <div class="section-header">🏠 स्थायी पता (आधार के अनुसार) <span style="font-size:11px;opacity:0.8;">*अनिवार्य</span></div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="form-group span-2">
+            <label>मकान नं. / मोहल्ला / गाँव <span class="req">*</span></label>
+            <input type="text" id="permAddr1" placeholder="मकान नंबर, मोहल्ला या ग्राम का नाम" required>
+            <span class="err-msg" id="err-permAddr1">कृपया पता भरें।</span>
+          </div>
+          <div class="form-group">
+            <label>जिला <span class="req">*</span></label>
+            <input type="text" id="permDistrict" placeholder="जिला" required>
+            <span class="err-msg" id="err-permDistrict">कृपया जिला भरें।</span>
+          </div>
+          <div class="form-group">
+            <label>राज्य <span class="req">*</span></label>
+            <input type="text" id="permState" placeholder="राज्य" value="Uttar Pradesh" required>
+            <span class="err-msg" id="err-permState">कृपया राज्य भरें।</span>
+          </div>
+          <div class="form-group">
+            <label>पिन कोड <span class="req">*</span></label>
+            <input type="text" id="permPin" placeholder="6 अंकों का पिन कोड" maxlength="6" inputmode="numeric" required>
+            <span class="err-msg" id="err-permPin">6 अंकों का पिन कोड अनिवार्य है।</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: अस्थायी पता -->
+    <div class="section">
+      <div class="section-header">📍 अस्थायी पता (वर्तमान निवास) <span style="font-size:11px;opacity:0.8;">वैकल्पिक — यदि स्थायी पते से अलग हो</span></div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="form-group span-2">
+            <label>मकान नं. / मोहल्ला / गाँव</label>
+            <input type="text" id="tempAddr1" placeholder="मकान नंबर, मोहल्ला या ग्राम का नाम">
+          </div>
+          <div class="form-group">
+            <label>जिला</label>
+            <input type="text" id="tempDistrict" placeholder="जिला">
+          </div>
+          <div class="form-group">
+            <label>राज्य</label>
+            <input type="text" id="tempState" placeholder="राज्य">
+          </div>
+          <div class="form-group">
+            <label>पिन कोड</label>
+            <input type="text" id="tempPin" placeholder="6 अंकों का पिन कोड" maxlength="6" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: पूर्व योग्यता -->
     <div class="section">
       <div class="section-header">📋 पूर्व शैक्षिक योग्यता</div>
       <div class="section-body">
@@ -450,6 +510,7 @@ function closeSuccessModal() {
   document.getElementById('centreCode').value = '';
   // Reset prevExam dropdown
   document.getElementById('prevExam').innerHTML = '<option value="">-- पहले कक्षा चुनें --</option>';
+  document.getElementById('permState').value = 'Uttar Pradesh';
 }
 
 // ── Populate Districts ──
@@ -558,35 +619,64 @@ function validate() {
   if (!gender) { gErr.style.display = 'block'; ok = false; }
   else          { gErr.style.display = 'none'; }
 
-  // DOB — optional but if filled, age must be >= 14
+  // DOB — mandatory, age >= 14
   var dobVal = document.getElementById('dob').value;
   var dobErr = document.getElementById('err-dob');
-  if (dobVal) {
+  if (!dobVal) {
+    document.getElementById('dob').classList.add('error');
+    dobErr.textContent = 'जन्म तिथि अनिवार्य है।';
+    dobErr.style.display = 'block'; ok = false;
+  } else {
     var dobDate = new Date(dobVal);
     var minAge  = new Date();
     minAge.setFullYear(minAge.getFullYear() - 14);
     if (dobDate > minAge) {
       document.getElementById('dob').classList.add('error');
+      dobErr.textContent = 'आयु कम से कम 14 वर्ष होनी चाहिए।';
       dobErr.style.display = 'block'; ok = false;
     } else {
       document.getElementById('dob').classList.remove('error');
       dobErr.style.display = 'none';
     }
-  } else {
-    document.getElementById('dob').classList.remove('error');
-    dobErr.style.display = 'none';
   }
 
-  // Aadhaar — optional but if filled must be 12 digits
+  // Father name — mandatory
+  check('fatherName', 'err-fatherName', function(v){ return v.length >= 2; });
+
+  // Aadhaar — mandatory, must be 12 digits
   var aadhaarVal = document.getElementById('aadhaar').value.trim();
   var aadhaarErr = document.getElementById('err-aadhaar');
-  if (aadhaarVal !== '' && !/^\d{12}$/.test(aadhaarVal)) {
+  if (!/^\d{12}$/.test(aadhaarVal)) {
     document.getElementById('aadhaar').classList.add('error');
-    aadhaarErr.style.display = 'block';
-    ok = false;
+    aadhaarErr.style.display = 'block'; ok = false;
   } else {
     document.getElementById('aadhaar').classList.remove('error');
     aadhaarErr.style.display = 'none';
+  }
+
+  // Email — optional but if filled must be valid
+  var emailVal = document.getElementById('email').value.trim();
+  var emailErr = document.getElementById('err-email');
+  if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    document.getElementById('email').classList.add('error');
+    emailErr.style.display = 'block'; ok = false;
+  } else {
+    document.getElementById('email').classList.remove('error');
+    emailErr.style.display = 'none';
+  }
+
+  // Permanent address — mandatory
+  check('permAddr1',    'err-permAddr1',    function(v){ return v.length >= 3; });
+  check('permDistrict', 'err-permDistrict', function(v){ return v.length >= 2; });
+  check('permState',    'err-permState',    function(v){ return v.length >= 2; });
+  var permPinVal = document.getElementById('permPin').value.trim();
+  var permPinErr = document.getElementById('err-permPin');
+  if (!/^\d{6}$/.test(permPinVal)) {
+    document.getElementById('permPin').classList.add('error');
+    permPinErr.style.display = 'block'; ok = false;
+  } else {
+    document.getElementById('permPin').classList.remove('error');
+    permPinErr.style.display = 'none';
   }
 
   // Prev Year — optional but if filled must be valid
@@ -641,6 +731,15 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
     gender:        gender ? gender.value : '',
     aadhaar:       document.getElementById('aadhaar').value.trim(),
     mobile:        document.getElementById('mobile').value.trim(),
+    email:         document.getElementById('email').value.trim(),
+    permAddr1:     document.getElementById('permAddr1').value.trim(),
+    permDistrict:  document.getElementById('permDistrict').value.trim(),
+    permState:     document.getElementById('permState').value.trim(),
+    permPin:       document.getElementById('permPin').value.trim(),
+    tempAddr1:     document.getElementById('tempAddr1').value.trim(),
+    tempDistrict:  document.getElementById('tempDistrict').value.trim(),
+    tempState:     document.getElementById('tempState').value.trim(),
+    tempPin:       document.getElementById('tempPin').value.trim(),
     prevExam:      document.getElementById('prevExam').value,
     prevYear:      document.getElementById('prevYear').value,
     prevBoard:     document.getElementById('prevBoard').value.trim(),
