@@ -66,9 +66,9 @@ function setupDashboardSheet() {
   kpiCard('C4','C5','📅 आज के पंजीकरण',
     '=COUNTIF('+reg+'!A:A,TEXT(TODAY(),"dd/mm/yyyy")&"*")', '#27ae60','#ffffff');
   kpiCard('E4','E5','🏫 सक्रिय केंद्र',
-    '=SUMPRODUCT(1/COUNTIF('+reg+'!C2:C,'+reg+'!C2:C)*('+reg+'!C2:C<>""))', '#e67e22','#ffffff');
+    '=SUMPRODUCT(('+reg+'!C2:C<>"")/COUNTIF('+reg+'!C2:C,'+reg+'!C2:C&""))', '#e67e22','#ffffff');
   kpiCard('G4','G5','⚠️ निष्क्रिय केंद्र',
-    '=396-SUMPRODUCT(1/COUNTIF('+reg+'!C2:C,'+reg+'!C2:C)*('+reg+'!C2:C<>""))', '#e74c3c','#ffffff');
+    '=396-SUMPRODUCT(('+reg+'!C2:C<>"")/COUNTIF('+reg+'!C2:C,'+reg+'!C2:C&""))', '#e74c3c','#ffffff');
 
   // ── Row 7-8: Class KPI cards ──
   dash.setRowHeight(6, 10); // spacer
