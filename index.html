@@ -226,7 +226,7 @@
             </select>
             <span class="err-msg" id="err-classYear">कृपया कक्षा चुनें।</span>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="group-stream">
             <label>वर्ग <span class="req">*</span></label>
             <select id="stream" required>
               <option value="">-- वर्ग चुनें --</option>
@@ -556,6 +556,14 @@ document.getElementById('classYear').addEventListener('change', function() {
   var cls = this.value;
   prevExam.innerHTML = '';
 
+  // वर्ग (stream) केवल Class 11 और 12 के लिए
+  var streamGroup = document.getElementById('group-stream');
+  var streamSel   = document.getElementById('stream');
+  var show9or10   = (cls === 'Class 9' || cls === 'Class 10');
+  streamGroup.style.display = show9or10 ? 'none' : '';
+  streamSel.required        = !show9or10;
+  if (show9or10) { streamSel.value = ''; }
+
   if (cls === 'Class 9') {
     prevExam.innerHTML =
       '<option value="">-- परीक्षा चुनें --</option>' +
@@ -600,7 +608,8 @@ function validate() {
   check('district',    'err-district',    null);
   check('centre',      'err-centre',      null);
   check('classYear',   'err-classYear',   null);
-  check('stream',      'err-stream',      null);
+  var cls9or10 = ['Class 9','Class 10'].includes(document.getElementById('classYear').value);
+  if (!cls9or10) check('stream', 'err-stream', null);
   check('category',    'err-category',    null);
   check('studentName', 'err-studentName', function(v){
     // Allow Hindi (Devanagari), English letters, spaces — min 2 chars
